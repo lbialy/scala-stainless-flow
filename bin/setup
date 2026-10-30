@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Fetches the sbt-stainless plugin (project/lib/) and its local Maven repository (stainless/) from the Stainless
+# release this project is built with. They are too large to keep in git.
+set -euo pipefail
+
+version=0.10.3
+root=$(cd "$(dirname "$0")/.." && pwd)
+zip=$(mktemp -d)/sbt-stainless.zip
+
+curl -fsSL -o "$zip" "https://github.com/epfl-lara/stainless/releases/download/v$version/sbt-stainless.zip"
+unzip -oq "$zip" -d "$root"
+echo "sbt-stainless $version installed in $root/project/lib and $root/stainless"
+command -v z3 >/dev/null || echo "note: z3 is not on the PATH; Stainless needs it (e.g. brew install z3)"

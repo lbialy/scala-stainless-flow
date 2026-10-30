@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: sbt
+      - uses: sbt/setup-sbt@v1
+      - name: Install Z3
+        run: sudo apt-get update && sudo apt-get install -y z3
+      - name: Fetch sbt-stainless
+        run: bin/setup
+      - name: Prove the model
+        run: sbt -batch verify
+      - name: Test what is trusted
+        run: sbt -batch test

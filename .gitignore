@@ -1,0 +1,16 @@
+target/
+project/target/
+project/project/
+.bsp/
+.stainless-cache/
+stainless-stack-trace.txt
+# Fetched by bin/setup from the Stainless release
+stainless/
+project/lib/
+
+# Editor tooling
+project/metals.sbt
+.metals/
+.bloop/
+.vscode/
+.zed/
