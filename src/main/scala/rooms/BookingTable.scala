@@ -4,6 +4,7 @@ import stainless.lang.*
 import stainless.lang.StaticChecks.*
 import stainless.annotation.*
 import stainless.collection.*
+import flow.assumption
 
 /** Where the bookings are kept, as proven code sees it: the SQLite table, an opaque value to Stainless, and
   * `stored`, a ghost model of what it holds: every booking, oldest first.
@@ -19,18 +20,21 @@ import stainless.collection.*
   */
 final class BookingTable private (@extern val db: SqliteBookings, @ghost var stored: List[Booking]):
 
+  @assumption("tableMatchesModel", "The table gives a room's bookings in the order they were added, and adds one at the end.")
   @extern @pure
   def inRoom(room: String): RoomBookings =
     db.inRoom(room)
   .ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))
 
+  @assumption("tableMatchesModel", "The table gives a room's bookings in the order they were added, and adds one at the end.")
+  @assumption("onlyBookingWrites", "Only booking writes to the table.")
   @extern
   private[rooms] def add(booking: Booking): Unit =
     db.add(booking)
   .ensuring(_ => stored == old(this).stored :+ booking)
 
 object BookingTable:
-  /** startsEmpty (assumption): the table starts empty. */
+  @assumption("startsEmpty", "The table starts empty.")
   @extern
   def fresh(db: SqliteBookings): BookingTable =
     BookingTable(db, Nil())

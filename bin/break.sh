@@ -3,7 +3,7 @@
 #
 #   calendar  the calendar forgets the booking after the request          -> ScalaCheck finds a failing case
 #   touching  meetings that touch now overlap (claim over times changed)  -> Stainless refutes the step, with a case
-#   covers    covers also includes the end, so everything agrees again    -> everything passes: only review catches it
+#   covers    covers also includes the end, so everything agrees again    -> every proof passes; `flow review` catches it
 set -euo pipefail
 
 scenario=${1:?usage: bin/break.sh calendar|touching|covers}
@@ -28,11 +28,11 @@ case $scenario in
   touching)
     touching
     git diff --no-index "$root/$knowledge" "$knowledge" || true
-    sbt -batch verify ;;
+    sbt -batch verify "flow status" ;;
   covers)
     touching
     perl -pi -e 's/b\.start <= t && t < b\.end/b.start <= t && t <= b.end/' "$knowledge"
     git diff --no-index "$root/$knowledge" "$knowledge" || true
-    sbt -batch verify ;;
+    sbt -batch verify "flow review" ;;
   *) echo "unknown scenario: $scenario" >&2; exit 2 ;;
 esac

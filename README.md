@@ -47,8 +47,9 @@ apart when they are in different rooms or share no moment.
 
 ```scala
 /** What the booking form sends and the table stores. */
+@assumption("bookingsEndAfterStart", "Every booking ends after it starts.")
 final case class Booking(room: String, start: BigInt, end: BigInt):
-  require(start < end)   // bookingsEndAfterStart
+  require(start < end)
 
 /** A room's bookings, as the table gives them. */
 final case class RoomBookings(room: String, bookings: Vec[Booking])
@@ -70,13 +71,13 @@ The roots state the purpose over Declarations: concepts known only by what the s
 a Declaration is just a parameter, so a root holds for any meaning of it that satisfies the statements below.
 
 ```scala
-/** bookWhenFree: A request is booked exactly when its room is free for its whole time. */
+@claim("A request is booked exactly when its room is free for its whole time.")
 @ghost def bookWhenFree[W](booked: W => List[Booking], bookedAfter: (Booking, W) => List[Booking],
                            request: Booking, now: W): Boolean =
   val bookings = booked(now)
   bookedAfter(request, now) == when(free(bookings, request))(bookings :+ request)(bookings)
 
-/** acceptWhenFree: A request is accepted exactly when its room is free for its whole time. */
+@claim("A request is accepted exactly when its room is free for its whole time.")
 @ghost def acceptWhenFree[W](booked: W => List[Booking], accepted: (Booking, W) => Boolean,
                              request: Booking, now: W): Boolean =
   accepted(request, now) == free(booked(now), request)
@@ -155,7 +156,7 @@ def granted(held: RoomBookings, request: Booking): Boolean =
   Calendar(held).grants(request)
 .ensuring(res => grantWhenNoOverlap(held, request, res))
 
-/** grantWhenNoOverlap: A request is granted exactly when it overlaps no booking of its room. */
+@claim("A request is granted exactly when it overlaps no booking of its room.")
 @ghost def grantWhenNoOverlap(held: RoomBookings, request: Booking, granted: Boolean): Boolean =
   granted == held.bookings.model.forall(b => noOverlap(b, request))
 
@@ -270,12 +271,40 @@ passes, in FrFlow and here alike:
 total: 77   valid: 77   invalid: 0   unknown: 0
 ```
 
-FrFlow catches this with a signed ledger of decisions that sends the statement back to the developer with the diff.
-Here, the diff lands in `Knowledge.scala`, the file that holds every statement, and goes through the same code
-review as any other change. Whether that's enough is the honest question this repository leaves open. See
-[What is not here](#what-is-not-here).
+But the change reaches 10 statements, so they go back to the developer, and `sbt "flow review"` shows what changed:
+
+```text
+! bookWhenFree  claim  changed since accepted (demo-developer, 2026-10-30T01:22:16Z): review it
+  A request is booked exactly when its room is free for its whole time.
+
+What changed since it was accepted (demo-developer, 2026-10-30T01:22:16Z)
+  rooms.Knowledge$.covers
+    - def covers(b: Booking, t: BigInt): Boolean = b.start <= t && t < b.end
+    + def covers(b: Booking, t: BigInt): Boolean = b.start <= t && t <= b.end
+  ... 5 unchanged definition(s)
+...
+10 statement(s) wait for a decision: accept NAME... --as WHO, or reject NAME... --as WHO
+```
+
+Only the developer's signed decisions count, so an agent can't accept the change without the developer's key.
 
 ## Statements
+
+A statement is an annotation on the code that states it. The `flow` tool reads them from the TASTy files, which
+still hold every contract, ghost block and lemma call after Stainless erases them from the bytecode:
+
+| Kind | Written as | What it says | How it is checked |
+|---|---|---|---|
+| claim | `@claim("…")` on a `@ghost` predicate | a property of the system, in the words of its domain | Stainless proves it; a claim on `@extern` code is tested |
+| assumption | `@assumption(name, "…")` on the code it is about | what is trusted: an outside system, or what comes from outside | decided by the developer; tested, or checked at run time |
+| design | `@design(name, "…")` on the code it covers | an architecture decision with no formal content | decided by the developer; a change to its code brings it back |
+
+The graph comes from the contracts. A definition with a contract proves the claims in its `ensuring`. It rests on
+the claims in its `require`, on what the definitions it calls prove, and on the assumptions on the code it uses. A
+claim in the `require` of something it calls is proven at that call site. Nothing is declared twice, so the graph
+can't drift from the proofs.
+
+The 17 statements of FrFlow's example, and one design decision:
 
 | FrFlow node | Kind | Here | Checked by |
 |---|---|---|---|
@@ -296,6 +325,7 @@ review as any other change. Whether that's enough is the honest question this re
 | `oneAtATime` | assumption | `Rooms.bookOn` runs `Purpose.book` inside `SqliteBookings.atomically` | tested: 20 requests at once |
 | `startsEmpty` | assumption | contract of `@extern BookingTable.fresh` | tested |
 | `bookingsEndAfterStart` | assumption | invariant of `Booking` | checked at run time on every `Booking` |
+| (new) `calendarChecksNeighbours` | design | on the `Calendar` class | decided by the developer |
 
 ## Proven, tested and assumed
 
@@ -307,13 +337,85 @@ review as any other change. Whether that's enough is the honest question this re
 Everything above the code is proven from these. What's left to trust is the assumptions, the `@extern` contracts
 (each tested), and Stainless itself. FrFlow trusts its translation of the model to Lean in the same place.
 
+## Decisions
+
+The developer accepts or rejects every statement. Each decision is signed with the developer's SSH key
+(`ssh-keygen -Y sign`) and kept in `.flow/ledger.json`. It's checked against the keys in `.flow/allowed_signers`.
+
+A decision covers a hash of the statement: its kind, its text, and the tree of every definition it refers to,
+transitively. When any of those changes, the statement comes back for review with the diff. The hash is over tree
+structure, not text, so reformatting brings nothing back. `flow status` exits with 1 while anything waits for a
+decision or isn't proven, so CI gates on it.
+
+The ledger in this repository is signed by `demo-developer`, whose private key is not here. To decide yourself, add
+your public key to `.flow/allowed_signers` under your name, and sign with `--as NAME --key PATH`.
+
+## Using it
+
+`sbt "flow COMMAND"` reads the statements from the TASTy of `src/main`, and the proof states from the last
+`sbt verify`.
+
+`tree` shows the graph from the roots, with how each statement is established:
+
+```text
++ bookWhenFree  claim, proven by bookWhenFreeStep
+    A request is booked exactly when its room is free for its whole time.
+    + bookedIsStored  claim, proven where used: book
+        What is booked is what the table holds.
+    + bookedAfterIsStored  claim, proven where used: book
+        What is booked once a request is handled is what the table holds after booking it.
+    + storeWhenFree  claim, proven by bookIfGranted
+        A request is stored exactly when its room is free for its whole time.
+        + neverOverlap  claim, proven by neverOverlapAtStart, bookIfGranted
+            The bookings stored never overlap.
+            + grantWhenFree  claim, proven by grantWhenFreeStep
+                A request is granted exactly when its room is free for its whole time.
+                + grantWhenNoOverlap  claim, tested by granted
+                    A request is granted exactly when it overlaps no booking of its room.
+                    + bookingsOfTheRoom  claim, proven where used: bookIfGranted
+                    + roomBookingsApart  claim, proven where used: bookIfGranted
+                    - bookingsEndAfterStart  assumption, assumed
+            - tableMatchesModel  assumption, assumed
+            - onlyBookingWrites  assumption, assumed
+...
+```
+
+`show NAME` shows one statement: what it says, its proofs and whether they hold, where it sits, and its code:
+
+```text
+grantWhenFree  claim  accepted (demo-developer, 2026-10-30T01:22:16Z)
+  A request is granted exactly when its room is free for its whole time.
+
+  proven by grantWhenFreeStep
+    grantWhenFreeStep (Knowledge.scala:160): proven
+
+  rests on: grantWhenNoOverlap
+  serves: neverOverlap
+
+  rooms.Knowledge$.grantWhenFree
+    @claim("A request is granted exactly when its room is free for its whole time.")
+    @ghost
+    def grantWhenFree(held: RoomBookings, request: Booking, granted: Boolean): Boolean =
+      granted == free(held.bookings.model, request)
+```
+
+`status` shows every statement. When a step fails, every claim whose proof goes through it is marked:
+
+```text
++ bookWhenFree              claim       proven by bookWhenFreeStep; accepted (demo-developer, …)
+x grantWhenFree             claim       proven by grantWhenFreeStep (grantWhenFreeStep not proven); accepted (…)
+! grantWhenNoOverlap        claim       tested by granted; changed since accepted (…): review it
+- tableMatchesModel         assumption  assumed; accepted (demo-developer, …)
+...
+Rooms: 18 statements, 7 accepted and holding
+```
+
+`review` goes through the statements waiting for a decision, each with what changed. `accept NAME... --as WHO`
+(or `--all`) and `reject NAME... --as WHO` record signed decisions.
+
 ## What is not here
 
-- **Decisions.** FrFlow's developer accepts every statement with a signed decision kept in a ledger, and gets it
-  back for review when anything it rests on changes. That's what catches the third change above, and nothing here
-  replaces it. It's tooling around the prover, not the prover, so it could be built on Stainless as well:
-  hash each statement's transitive definitions, and compare them against the ledger.
-- **The terminal and web views** (`tree`, `show`, `review`, `status`) and the agent layer.
+- **The web view and the agent layer** of FrFlow.
 - **Run-time checks of tested code.** FrFlow checks the calendar's claim on every call. Here it's only tested,
   because checking it means a full pass over the room's bookings on each call.
 - **A model of the world.** FrFlow's `Flow` and `Boundary` model effects for you. Here the world is the table's ghost
@@ -329,7 +431,10 @@ git clone https://github.com/lbialy/scala-stainless-flow && cd scala-stainless-f
 bin/setup                    # fetches the sbt-stainless 0.10.3 plugin from the Stainless release
 sbt verify                   # proves the model
 sbt test                     # tests what is trusted
+sbt "flow status"            # the statements, and the developer's decisions on them
+sbt "flow tree"              # the graph from the roots
 bin/break.sh touching        # watch Stainless refute a step
+bin/break.sh covers          # every proof passes; watch the review catch it
 ```
 
 Notes for anyone building on this:

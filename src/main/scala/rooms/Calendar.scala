@@ -4,6 +4,7 @@ import stainless.lang.*
 import stainless.lang.StaticChecks.*
 import stainless.annotation.*
 import Knowledge.*
+import flow.design
 
 object Granted:
   /** Whether a request is granted, given its room's bookings.
@@ -22,6 +23,7 @@ object Granted:
   * start once; a request is granted when the booking before it ends by the time it starts, and the booking after it
   * starts once it ends. Checking those two neighbours is enough because a room's bookings never overlap.
   */
+@design("calendarChecksNeighbours", "The calendar sorts a room's bookings by start and checks a request against its two neighbours only, which is enough because a room's bookings never overlap.")
 @ignore
 final class Calendar(held: RoomBookings):
   private val startOrder: Ordering[Booking] = Ordering.by(_.start)

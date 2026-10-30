@@ -4,6 +4,7 @@ import stainless.lang.{ghost as ghostExpr, *}
 import stainless.lang.StaticChecks.*
 import stainless.annotation.*
 import Knowledge.*
+import flow.assumption
 
 object Book:
   /** Booking a request: whether it was booked. Reads the room's bookings from the table, asks the calendar, and
@@ -33,6 +34,7 @@ object Book:
 /** Booking on SQLite: the proven code, run one request at a time (oneAtATime). Glue that Stainless does not read. */
 @ignore
 object Rooms:
+  @assumption("oneAtATime", "Bookings are processed one at a time.")
   def bookOn(sql: SqliteBookings): Booking => Boolean =
     val table = BookingTable.fresh(sql)
     request => sql.atomically(Purpose.book(table, request))

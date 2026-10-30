@@ -22,5 +22,7 @@ jobs:
         run: bin/setup
       - name: Prove the model
         run: sbt -batch verify
+      - name: Check every statement is accepted and holds
+        run: sbt -batch "flow status"
       - name: Test what is trusted
         run: sbt -batch test

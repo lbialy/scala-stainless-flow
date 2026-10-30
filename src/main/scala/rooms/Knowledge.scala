@@ -4,6 +4,7 @@ import stainless.lang.*
 import stainless.lang.StaticChecks.*
 import stainless.annotation.*
 import stainless.collection.*
+import flow.claim
 
 /** The statements of the Rooms model (FrFlow's `examples/rooms/.../Knowledge.scala`), as Stainless sees them.
   *
@@ -43,14 +44,14 @@ object Knowledge:
   // say of them. Here they are parameters, so a lemma about them holds for every possible meaning they could have,
   // as long as its preconditions do. `W` is the world, kept abstract in the same way.
 
-  /** bookWhenFree: A request is booked exactly when its room is free for its whole time. */
+  @claim("A request is booked exactly when its room is free for its whole time.")
   @ghost
   def bookWhenFree[W](booked: W => List[Booking], bookedAfter: (Booking, W) => List[Booking],
                       request: Booking, now: W): Boolean =
     val bookings = booked(now)
     bookedAfter(request, now) == when(free(bookings, request))(bookings :+ request)(bookings)
 
-  /** acceptWhenFree: A request is accepted exactly when its room is free for its whole time. */
+  @claim("A request is accepted exactly when its room is free for its whole time.")
   @ghost
   def acceptWhenFree[W](booked: W => List[Booking], accepted: (Booking, W) => Boolean,
                         request: Booking, now: W): Boolean =
@@ -58,18 +59,18 @@ object Knowledge:
 
   // ── What each Declaration is in the code: the table, and booking's run ────────────────────────────────────────
 
-  /** bookedIsStored: What is booked is what the table holds. */
+  @claim("What is booked is what the table holds.")
   @ghost
   def bookedIsStored[W](booked: W => List[Booking], storedIn: W => List[Booking], now: W): Boolean =
     booked(now) == storedIn(now)
 
-  /** bookedAfterIsStored: What is booked once a request is handled is what the table holds after booking it. */
+  @claim("What is booked once a request is handled is what the table holds after booking it.")
   @ghost
   def bookedAfterIsStored[W](bookedAfter: (Booking, W) => List[Booking], storedIn: W => List[Booking],
                              after: (Booking, W) => W, request: Booking, now: W): Boolean =
     bookedAfter(request, now) == storedIn(after(request, now))
 
-  /** acceptedIsAnswered: A request is accepted exactly when booking it answers booked. */
+  @claim("A request is accepted exactly when booking it answers booked.")
   @ghost
   def acceptedIsAnswered[W](accepted: (Booking, W) => Boolean, answer: (Booking, W) => Boolean,
                             request: Booking, now: W): Boolean =
@@ -77,36 +78,36 @@ object Knowledge:
 
   // ── What booking stores and answers, and what the table always holds: postconditions of `Book.bookIfGranted` ──
 
-  /** storeWhenFree: A request is stored exactly when its room is free for its whole time. */
+  @claim("A request is stored exactly when its room is free for its whole time.")
   @ghost
   def storeWhenFree(stored: List[Booking], storedAfter: List[Booking], request: Booking): Boolean =
     storedAfter == when(free(stored, request))(stored :+ request)(stored)
 
-  /** answerWhenFree: A request is answered booked exactly when its room is free for its whole time. */
+  @claim("A request is answered booked exactly when its room is free for its whole time.")
   @ghost
   def answerWhenFree(stored: List[Booking], request: Booking, answer: Boolean): Boolean =
     answer == free(stored, request)
 
-  /** neverOverlap: The bookings stored never overlap. */
+  @claim("The bookings stored never overlap.")
   @ghost
   def neverOverlap(stored: List[Booking]): Boolean = pairwiseApart(stored)
 
   // ── What the calendar is given, and what it answers ───────────────────────────────────────────────────────────
 
-  /** bookingsOfTheRoom: A room's bookings are all of that room. */
+  @claim("A room's bookings are all of that room.")
   @ghost
   def bookingsOfTheRoom(held: RoomBookings): Boolean = held.bookings.model.forall(b => b.room == held.room)
 
-  /** roomBookingsApart: A room's bookings never overlap. */
+  @claim("A room's bookings never overlap.")
   @ghost
   def roomBookingsApart(held: RoomBookings): Boolean = pairwiseApart(held.bookings.model)
 
-  /** grantWhenFree: A request is granted exactly when its room is free for its whole time. */
+  @claim("A request is granted exactly when its room is free for its whole time.")
   @ghost
   def grantWhenFree(held: RoomBookings, request: Booking, granted: Boolean): Boolean =
     granted == free(held.bookings.model, request)
 
-  /** grantWhenNoOverlap: A request is granted exactly when it overlaps no booking of its room. */
+  @claim("A request is granted exactly when it overlaps no booking of its room.")
   @ghost
   def grantWhenNoOverlap(held: RoomBookings, request: Booking, granted: Boolean): Boolean =
     granted == held.bookings.model.forall(b => noOverlap(b, request))
