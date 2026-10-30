@@ -35,4 +35,4 @@ object Book:
 object Rooms:
   def bookOn(sql: SqliteBookings): Booking => Boolean =
     val table = BookingTable.fresh(sql)
-    request => sql.atomically(Book.bookIfGranted(table, request))
+    request => sql.atomically(Purpose.book(table, request))

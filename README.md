@@ -123,6 +123,27 @@ postcondition. This is the whole of FrFlow's `BookWhenFree.lean`:
 .ensuring(_ => bookWhenFree(booked, bookedAfter, request, now))
 ```
 
+The steps alone say: whatever `booked` and `bookedAfter` mean, the root holds as long as the claims below it hold.
+`Purpose.book` connects them to the code. The world is what the table holds. Each run of booking fixes the
+Declarations where the roots look at them: `booked` is what the table holds, `bookedAfter` is what it holds once
+booking returns, and `accepted` is what booking answers. Both roots are then proven of every run, from every world
+in which the stored bookings never overlap. This is what the application runs:
+
+```scala
+def book(table: BookingTable, request: Booking): Boolean =
+  require(neverOverlap(table.stored))
+  @ghost val now = table.stored
+  val answer = Book.bookIfGranted(table, request)
+  ghostExpr:
+    bookWhenFreeStep(asItStands, leaves(table.stored), asItStands, leaves(table.stored), request, now)
+    acceptWhenFreeStep(asItStands, answers(answer), asItStands, answers(answer), request, now)
+  answer
+.ensuring(answer =>
+  bookWhenFree(asItStands, leaves(table.stored), request, old(table).stored) &&
+  acceptWhenFree(asItStands, answers(answer), request, old(table).stored) &&
+  neverOverlap(table.stored))
+```
+
 The calendar decides whether a request is granted. It's plain Scala (sorting, binary search, `Vector`) and isn't
 proven. Stainless sees only its contract, `grantWhenNoOverlap`, and ScalaCheck tests that contract on 1,000
 generated cases.
@@ -192,8 +213,8 @@ $ sbt verify
   Book.scala:17:5:        bookIfGranted       postcondition                                   valid
   Book.scala:22:18:       bookIfGranted       precond. (call granted(held, request))          valid
   ...
-  total: 72   valid: 72   invalid: 0   unknown: 0
-Stainless: all 72 verification conditions valid
+  total: 77   valid: 77   invalid: 0   unknown: 0
+Stainless: all 77 verification conditions valid
 
 $ sbt test
 + Calendar.grantWhenNoOverlap: OK, passed 1000 tests.
@@ -246,7 +267,7 @@ passes, in FrFlow and here alike:
 ```
 
 ```text
-total: 72   valid: 72   invalid: 0   unknown: 0
+total: 77   valid: 77   invalid: 0   unknown: 0
 ```
 
 FrFlow catches this with a signed ledger of decisions that sends the statement back to the developer with the diff.
@@ -258,11 +279,11 @@ review as any other change. Whether that's enough is the honest question this re
 
 | FrFlow node | Kind | Here | Checked by |
 |---|---|---|---|
-| `bookWhenFree` | root | `bookWhenFree`, step `bookWhenFreeStep` | proven |
-| `acceptWhenFree` | root | `acceptWhenFree`, step `acceptWhenFreeStep` | proven |
-| `bookedIsStored` | claim | a precondition of both root steps | ties a Declaration to the code |
-| `bookedAfterIsStored` | claim | a precondition of `bookWhenFreeStep` | ties a Declaration to the code |
-| `acceptedIsAnswered` | claim | a precondition of `acceptWhenFreeStep` | ties a Declaration to the code |
+| `bookWhenFree` | root | `bookWhenFree`, step `bookWhenFreeStep` | proven, of every run (`Purpose.book`) |
+| `acceptWhenFree` | root | `acceptWhenFree`, step `acceptWhenFreeStep` | proven, of every run (`Purpose.book`) |
+| `bookedIsStored` | claim | a precondition of both root steps | defines `booked` in `Purpose.book`, from the run |
+| `bookedAfterIsStored` | claim | a precondition of `bookWhenFreeStep` | defines `bookedAfter` in `Purpose.book`, from the run |
+| `acceptedIsAnswered` | claim | a precondition of `acceptWhenFreeStep` | defines `accepted` in `Purpose.book`, from the run |
 | `storeWhenFree` | claim | postcondition of `bookIfGranted` | proven of the code |
 | `answerWhenFree` | claim | postcondition of `bookIfGranted` | proven of the code |
 | `neverOverlap` | claim | kept by `bookIfGranted`, holds at the start | proven (base case and step) |
@@ -272,7 +293,7 @@ review as any other change. Whether that's enough is the honest question this re
 | `grantWhenNoOverlap` | claim on tested code | contract of `@extern granted` (the calendar) | tested: 1,000 cases |
 | `tableMatchesModel` | assumption | contracts of `@extern BookingTable.inRoom` / `add` | tested on SQLite |
 | `onlyBookingWrites` | assumption | `add` is `private[rooms]`, called only by booking | the compiler's visibility check |
-| `oneAtATime` | assumption | `Rooms.bookOn` books inside `SqliteBookings.atomically` | tested: 20 requests at once |
+| `oneAtATime` | assumption | `Rooms.bookOn` runs `Purpose.book` inside `SqliteBookings.atomically` | tested: 20 requests at once |
 | `startsEmpty` | assumption | contract of `@extern BookingTable.fresh` | tested |
 | `bookingsEndAfterStart` | assumption | invariant of `Booking` | checked at run time on every `Booking` |
 
