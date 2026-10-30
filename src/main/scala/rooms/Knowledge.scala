@@ -117,74 +117,74 @@ object Knowledge:
   @ghost
   def bookWhenFreeStep[W](booked: W => List[Booking], bookedAfter: (Booking, W) => List[Booking],
                           storedIn: W => List[Booking], after: (Booking, W) => W,
-                          request: Booking, now: W): Unit = {
+                          request: Booking, now: W): Unit =
     require(
       bookedIsStored(booked, storedIn, now) &&
       bookedAfterIsStored(bookedAfter, storedIn, after, request, now) &&
       storeWhenFree(storedIn(now), storedIn(after(request, now)), request))
-  }.ensuring(_ => bookWhenFree(booked, bookedAfter, request, now))
+  .ensuring(_ => bookWhenFree(booked, bookedAfter, request, now))
 
   /** acceptWhenFree, from bookedIsStored, acceptedIsAnswered and answerWhenFree. */
   @ghost
   def acceptWhenFreeStep[W](booked: W => List[Booking], accepted: (Booking, W) => Boolean,
                             storedIn: W => List[Booking], answer: (Booking, W) => Boolean,
-                            request: Booking, now: W): Unit = {
+                            request: Booking, now: W): Unit =
     require(
       bookedIsStored(booked, storedIn, now) &&
       acceptedIsAnswered(accepted, answer, request, now) &&
       answerWhenFree(storedIn(now), request, answer(request, now)))
-  }.ensuring(_ => acceptWhenFree(booked, accepted, request, now))
+  .ensuring(_ => acceptWhenFree(booked, accepted, request, now))
 
   /** Two bookings, each ending after it starts, are apart exactly when they do not overlap: if they share a room
     * and neither ends before the other starts, the later of the two starts is a moment both cover.
     */
   @ghost
-  def apartIffNoOverlap(a: Booking, b: Booking): Unit = {
+  def apartIffNoOverlap(a: Booking, b: Booking): Unit =
     if a.room == b.room && !noOverlap(a, b) then
       val t = if a.start >= b.start then a.start else b.start
       assert(covers(a, t) && covers(b, t))
-  }.ensuring(_ => apart(a, b) == noOverlap(a, b))
+  .ensuring(_ => apart(a, b) == noOverlap(a, b))
 
   @ghost
-  def noOverlapIsFree(bookings: List[Booking], request: Booking): Unit = {
+  def noOverlapIsFree(bookings: List[Booking], request: Booking): Unit =
     decreases(bookings)
     bookings match
       case Nil() => ()
       case Cons(h, t) =>
         apartIffNoOverlap(h, request)
         noOverlapIsFree(t, request)
-  }.ensuring(_ => bookings.forall(b => noOverlap(b, request)) == free(bookings, request))
+  .ensuring(_ => bookings.forall(b => noOverlap(b, request)) == free(bookings, request))
 
   /** grantWhenFree, from grantWhenNoOverlap (and bookingsEndAfterStart, the invariant of Booking). */
   @ghost
-  def grantWhenFreeStep(held: RoomBookings, request: Booking, granted: Boolean): Unit = {
+  def grantWhenFreeStep(held: RoomBookings, request: Booking, granted: Boolean): Unit =
     require(grantWhenNoOverlap(held, request, granted))
     noOverlapIsFree(held.bookings.model, request)
-  }.ensuring(_ => grantWhenFree(held, request, granted))
+  .ensuring(_ => grantWhenFree(held, request, granted))
 
   // ── Lemmas booking's proof uses ───────────────────────────────────────────────────────────────────────────────
 
   /** bookingsOfTheRoom, of what the table gives: the stored bookings of one room are all of that room. */
   @ghost
-  def ofTheRoom(stored: List[Booking], room: String): Unit = {
+  def ofTheRoom(stored: List[Booking], room: String): Unit =
     decreases(stored)
     stored match
       case Nil()      => ()
       case Cons(_, t) => ofTheRoom(t, room)
-  }.ensuring(_ => stored.filter(b => b.room == room).forall(b => b.room == room))
+  .ensuring(_ => stored.filter(b => b.room == room).forall(b => b.room == room))
 
   @ghost
-  def apartFromFiltered(h: Booking, t: List[Booking], room: String): Unit = {
+  def apartFromFiltered(h: Booking, t: List[Booking], room: String): Unit =
     require(t.forall(b => apart(h, b)))
     decreases(t)
     t match
       case Nil()        => ()
       case Cons(_, t2)  => apartFromFiltered(h, t2, room)
-  }.ensuring(_ => t.filter(b => b.room == room).forall(b => apart(h, b)))
+  .ensuring(_ => t.filter(b => b.room == room).forall(b => apart(h, b)))
 
   /** roomBookingsApart, of what the table gives: one room's bookings never overlap when no stored ones do. */
   @ghost
-  def apartOfTheRoom(stored: List[Booking], room: String): Unit = {
+  def apartOfTheRoom(stored: List[Booking], room: String): Unit =
     require(pairwiseApart(stored))
     decreases(stored)
     stored match
@@ -192,31 +192,31 @@ object Knowledge:
       case Cons(h, t) =>
         apartFromFiltered(h, t, room)
         apartOfTheRoom(t, room)
-  }.ensuring(_ => pairwiseApart(stored.filter(b => b.room == room)))
+  .ensuring(_ => pairwiseApart(stored.filter(b => b.room == room)))
 
   /** A request is free among its room's bookings exactly when it is free among all of them: a booking of another
     * room is apart from it.
     */
   @ghost
-  def freeOfTheRoom(stored: List[Booking], request: Booking): Unit = {
+  def freeOfTheRoom(stored: List[Booking], request: Booking): Unit =
     decreases(stored)
     stored match
       case Nil()      => ()
       case Cons(_, t) => freeOfTheRoom(t, request)
-  }.ensuring(_ => free(stored.filter(b => b.room == request.room), request) == free(stored, request))
+  .ensuring(_ => free(stored.filter(b => b.room == request.room), request) == free(stored, request))
 
   @ghost
-  def apartFromAppended(h: Booking, t: List[Booking], request: Booking): Unit = {
+  def apartFromAppended(h: Booking, t: List[Booking], request: Booking): Unit =
     require(t.forall(b => apart(h, b)) && apart(h, request))
     decreases(t)
     t match
       case Nil()       => ()
       case Cons(_, t2) => apartFromAppended(h, t2, request)
-  }.ensuring(_ => (t :+ request).forall(b => apart(h, b)))
+  .ensuring(_ => (t :+ request).forall(b => apart(h, b)))
 
   /** neverOverlap is kept by storing a request that is free. */
   @ghost
-  def neverOverlapKept(stored: List[Booking], request: Booking): Unit = {
+  def neverOverlapKept(stored: List[Booking], request: Booking): Unit =
     require(pairwiseApart(stored) && free(stored, request))
     decreases(stored)
     stored match
@@ -224,10 +224,10 @@ object Knowledge:
       case Cons(h, t) =>
         apartFromAppended(h, t, request)
         neverOverlapKept(t, request)
-  }.ensuring(_ => pairwiseApart(stored :+ request))
+  .ensuring(_ => pairwiseApart(stored :+ request))
 
   /** neverOverlap holds of the table as it starts (startsEmpty). */
   @ghost
-  def neverOverlapAtStart(): Unit = {
+  def neverOverlapAtStart(): Unit =
     ()
-  }.ensuring(_ => neverOverlap(Nil[Booking]()))
+  .ensuring(_ => neverOverlap(Nil[Booking]()))

@@ -20,18 +20,18 @@ import stainless.collection.*
 final class BookingTable private (@extern val db: SqliteBookings, @ghost var stored: List[Booking]):
 
   @extern @pure
-  def inRoom(room: String): RoomBookings = {
+  def inRoom(room: String): RoomBookings =
     db.inRoom(room)
-  }.ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))
+  .ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))
 
   @extern
-  private[rooms] def add(booking: Booking): Unit = {
+  private[rooms] def add(booking: Booking): Unit =
     db.add(booking)
-  }.ensuring(_ => stored == old(this).stored :+ booking)
+  .ensuring(_ => stored == old(this).stored :+ booking)
 
 object BookingTable:
   /** startsEmpty (assumption): the table starts empty. */
   @extern
-  def fresh(db: SqliteBookings): BookingTable = {
+  def fresh(db: SqliteBookings): BookingTable =
     BookingTable(db, Nil())
-  }.ensuring(_.stored == Nil[Booking]())
+  .ensuring(_.stored == Nil[Booking]())

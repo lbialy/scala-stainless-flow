@@ -20,29 +20,29 @@ final case class Vec[A](@extern @pure underlying: Vector[A]):
   def model: List[A] = Vec.modelOf(this)
 
   @extern @pure
-  def size: BigInt = {
+  def size: BigInt =
     BigInt(underlying.size)
-  }.ensuring(_ == model.size)
+  .ensuring(_ == model.size)
 
   @extern @pure
-  def isEmpty: Boolean = {
+  def isEmpty: Boolean =
     underlying.isEmpty
-  }.ensuring(_ == model.isEmpty)
+  .ensuring(_ == model.isEmpty)
 
   @extern @pure
-  def :+(a: A): Vec[A] = {
+  def :+(a: A): Vec[A] =
     Vec(underlying :+ a)
-  }.ensuring(_.model == model :+ a)
+  .ensuring(_.model == model :+ a)
 
   @extern @pure
-  def filter(p: A => Boolean): Vec[A] = {
+  def filter(p: A => Boolean): Vec[A] =
     Vec(underlying.filter(p))
-  }.ensuring(_.model == model.filter(p))
+  .ensuring(_.model == model.filter(p))
 
   @extern @pure
-  def forall(p: A => Boolean): Boolean = {
+  def forall(p: A => Boolean): Boolean =
     underlying.forall(p)
-  }.ensuring(_ == model.forall(p))
+  .ensuring(_ == model.forall(p))
 
   /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */
   @ignore
@@ -50,9 +50,9 @@ final case class Vec[A](@extern @pure underlying: Vector[A]):
 
 object Vec:
   @extern @pure
-  def empty[A]: Vec[A] = {
+  def empty[A]: Vec[A] =
     Vec(Vector.empty[A])
-  }.ensuring(_.model == List[A]())
+  .ensuring(_.model == List[A]())
 
   @ignore
   def apply[A](as: A*): Vec[A] = Vec(Vector(as*))

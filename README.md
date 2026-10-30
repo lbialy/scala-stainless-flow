@@ -86,22 +86,20 @@ Booking a request reads the room's bookings from the table, asks the calendar, a
 granted. Its claims are its postconditions, and Stainless proves them of the code.
 
 ```scala
-def bookIfGranted(table: BookingTable, request: Booking): Boolean = {
+def bookIfGranted(table: BookingTable, request: Booking): Boolean =
   require(neverOverlap(table.stored))
   val held = table.inRoom(request.room)
-  ghostExpr {
+  ghostExpr:
     ofTheRoom(table.stored, request.room)        // bookingsOfTheRoom
     apartOfTheRoom(table.stored, request.room)   // roomBookingsApart
-  }
   val booked = Granted.granted(held, request)
-  ghostExpr {
+  ghostExpr:
     grantWhenFreeStep(held, request, booked)
     freeOfTheRoom(table.stored, request)
     if booked then neverOverlapKept(table.stored, request)
-  }
   if booked then table.add(request)
   booked
-}.ensuring(res =>
+.ensuring(res =>
   answerWhenFree(old(table).stored, request, res) &&
   storeWhenFree(old(table).stored, table.stored, request) &&
   neverOverlap(table.stored))
@@ -117,12 +115,12 @@ postcondition. This is the whole of FrFlow's `BookWhenFree.lean`:
 /** bookWhenFree, from bookedIsStored, bookedAfterIsStored and storeWhenFree. */
 @ghost def bookWhenFreeStep[W](booked: W => List[Booking], bookedAfter: (Booking, W) => List[Booking],
                                storedIn: W => List[Booking], after: (Booking, W) => W,
-                               request: Booking, now: W): Unit = {
+                               request: Booking, now: W): Unit =
   require(
     bookedIsStored(booked, storedIn, now) &&
     bookedAfterIsStored(bookedAfter, storedIn, after, request, now) &&
     storeWhenFree(storedIn(now), storedIn(after(request, now)), request))
-}.ensuring(_ => bookWhenFree(booked, bookedAfter, request, now))
+.ensuring(_ => bookWhenFree(booked, bookedAfter, request, now))
 ```
 
 The calendar decides whether a request is granted. It's plain Scala (sorting, binary search, `Vector`) and isn't
@@ -131,10 +129,10 @@ generated cases.
 
 ```scala
 @extern @pure
-def granted(held: RoomBookings, request: Booking): Boolean = {
+def granted(held: RoomBookings, request: Booking): Boolean =
   require(bookingsOfTheRoom(held) && roomBookingsApart(held))
   Calendar(held).grants(request)
-}.ensuring(res => grantWhenNoOverlap(held, request, res))
+.ensuring(res => grantWhenNoOverlap(held, request, res))
 
 /** grantWhenNoOverlap: A request is granted exactly when it overlaps no booking of its room. */
 @ghost def grantWhenNoOverlap(held: RoomBookings, request: Booking, granted: Boolean): Boolean =
@@ -151,11 +149,11 @@ to look at:
 ```scala
 /** Two bookings are apart exactly when they do not overlap: if they share a room and neither ends before the other
   * starts, the later of the two starts is a moment both cover. */
-@ghost def apartIffNoOverlap(a: Booking, b: Booking): Unit = {
+@ghost def apartIffNoOverlap(a: Booking, b: Booking): Unit =
   if a.room == b.room && !noOverlap(a, b) then
     val t = if a.start >= b.start then a.start else b.start
     assert(covers(a, t) && covers(b, t))
-}.ensuring(_ => apart(a, b) == noOverlap(a, b))
+.ensuring(_ => apart(a, b) == noOverlap(a, b))
 ```
 
 ### Standard library types in proven code
@@ -171,9 +169,9 @@ final case class Vec[A](@extern @pure underlying: Vector[A]):
   def model: List[A] = Vec.modelOf(this)
 
   @extern @pure
-  def filter(p: A => Boolean): Vec[A] = {
+  def filter(p: A => Boolean): Vec[A] =
     Vec(underlying.filter(p))
-  }.ensuring(_.model == model.filter(p))
+  .ensuring(_.model == model.filter(p))
 ```
 
 Those promises are trusted, so [`VecSpec`](src/test/scala/rooms/VecSpec.scala) tests every one of them against the

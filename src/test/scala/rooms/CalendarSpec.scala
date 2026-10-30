@@ -18,9 +18,8 @@ object CalendarSpec extends Properties("Calendar"):
 
   property("generated cases meet the contract's hypotheses") = forAll(roomBookings)(withinHypotheses)
 
-  property("grantWhenNoOverlap") = forAll(roomBookings, requests) { (held, request) =>
+  property("grantWhenNoOverlap") = forAll(roomBookings, requests): (held, request) =>
     Granted.granted(held, request) == Vec.modelOf(held.bookings).forall(b => Knowledge.noOverlap(b, request))
-  }
 
   // The examples, as in FrFlow's GrantedExamples.
   property("back to back: granted") =

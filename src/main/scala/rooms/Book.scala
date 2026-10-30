@@ -12,22 +12,20 @@ object Book:
     * Proven: storeWhenFree, answerWhenFree, and that neverOverlap is kept. Assumed: tableMatchesModel (the table's
     * contracts), bookingsEndAfterStart (the invariant of Booking), and oneAtATime (callers go through `bookOn`).
     */
-  def bookIfGranted(table: BookingTable, request: Booking): Boolean = {
+  def bookIfGranted(table: BookingTable, request: Booking): Boolean =
     require(neverOverlap(table.stored))
     val held = table.inRoom(request.room)
-    ghostExpr {
+    ghostExpr:
       ofTheRoom(table.stored, request.room)
       apartOfTheRoom(table.stored, request.room)
-    }
     val booked = Granted.granted(held, request)
-    ghostExpr {
+    ghostExpr:
       grantWhenFreeStep(held, request, booked)
       freeOfTheRoom(table.stored, request)
       if booked then neverOverlapKept(table.stored, request)
-    }
     if booked then table.add(request)
     booked
-  }.ensuring(res =>
+  .ensuring(res =>
     answerWhenFree(old(table).stored, request, res) &&
     storeWhenFree(old(table).stored, table.stored, request) &&
     neverOverlap(table.stored))

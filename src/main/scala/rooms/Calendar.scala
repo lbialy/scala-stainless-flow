@@ -13,10 +13,10 @@ object Granted:
     * calls it, trusts the result, and `CalendarSpec` tests it on generated cases.
     */
   @extern @pure
-  def granted(held: RoomBookings, request: Booking): Boolean = {
+  def granted(held: RoomBookings, request: Booking): Boolean =
     require(bookingsOfTheRoom(held) && roomBookingsApart(held))
     Calendar(held).grants(request)
-  }.ensuring(res => grantWhenNoOverlap(held, request, res))
+  .ensuring(res => grantWhenNoOverlap(held, request, res))
 
 /** The calendar of one room. It grants a request for another room. For its own room, it sorts the bookings by
   * start once; a request is granted when the booking before it ends by the time it starts, and the booking after it

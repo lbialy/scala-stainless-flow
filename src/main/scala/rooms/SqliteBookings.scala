@@ -18,21 +18,18 @@ final class SqliteBookings private (conn: Connection):
   /** Runs `body` with no other booking in between: what `oneAtATime` assumes. */
   def atomically[A](body: => A): A = synchronized(body)
 
-  def held: List[Booking] = synchronized {
+  def held: List[Booking] = synchronized:
     read(conn.prepareStatement("select room, starts, ends from bookings order by id"))
-  }
 
-  private def bookingsIn(room: String): Vector[Booking] = synchronized {
+  private def bookingsIn(room: String): Vector[Booking] = synchronized:
     val query = conn.prepareStatement("select room, starts, ends from bookings where room = ? order by id")
     query.setString(1, room)
     read(query).toVector
-  }
 
-  private def insert(b: Booking): Unit = synchronized {
+  private def insert(b: Booking): Unit = synchronized:
     val row = conn.prepareStatement("insert into bookings (room, starts, ends) values (?, ?, ?)")
     List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))
     row.executeUpdate()
-  }
 
   private def read(query: PreparedStatement): List[Booking] =
     val rows = query.executeQuery()
