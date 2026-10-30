@@ -91,7 +91,7 @@ object Main:
       .getOrElse(sys.error(s"missing $name"))
 
     val root    = Path.of(opt("--root"))
-    val tasty   = Files.walk(Path.of(opt("--classes"))).iterator.asScala.filter(_.toString.endsWith(".tasty")).toList
+    val tasty   = Files.walk(Path.of(opt("--classes"))).iterator.asScala.filter(_.toString.endsWith(".tasty")).toList.sortBy(_.toString)
     val classpath = Files.readString(Path.of(opt("--classpath-file"))).trim.split(java.io.File.pathSeparator).toList
     val sources   = opt("--sources").split(java.io.File.pathSeparator).map(Path.of(_).toAbsolutePath.normalize).toList
     def ours(file: String) = sources.exists(root.resolve(file).toAbsolutePath.normalize.startsWith(_))

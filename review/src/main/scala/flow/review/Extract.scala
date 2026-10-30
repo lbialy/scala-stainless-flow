@@ -52,6 +52,15 @@ object Extract:
       then sym.owner
       else sym
 
+    /** A name for a definition that is unique and the same on every run. A class and its companion object share a full
+      * name, and so do overloads, and the order of symbols in a set is not the same from one run to the next.
+      */
+    def key(sym: Symbol): String =
+      val overloaded = sym.isDefDef && sym.owner.methodMember(sym.name).size > 1
+      if sym.isValDef && sym.flags.is(Flags.Module) then s"${sym.fullName} (object)"
+      else if overloaded then s"${sym.fullName}${sym.signature.paramSigs.mkString("(", ", ", ")")}"
+      else sym.fullName
+
     def refs(tree: Tree): Set[Symbol] =
       val found = mutable.Set.empty[Symbol]
       object traverser extends TreeTraverser:
@@ -73,7 +82,7 @@ object Extract:
         val synthetic = sym.flags.is(Flags.Synthetic) || sym.name.contains("$anonfun")
         if defs.contains(sym) && !synthetic && seen.add(sym) then refs(defs(sym)).foreach(visit)
       roots.foreach(visit)
-      seen.toList.sortBy(_.fullName)
+      seen.toList.sortBy(key)
 
     def sha256(s: String): String =
       MessageDigest.getInstance("SHA-256").digest(s.getBytes("UTF-8")).map("%02x".format(_)).mkString
@@ -89,15 +98,17 @@ object Extract:
 
     def statement(name: String, kind: Kind, text: String, on: List[Symbol]): FlowStatement =
       val all = closure(on)
+      val clashes = all.groupBy(key).collect { case (k, ss) if ss.size > 1 => k }
+      if clashes.nonEmpty then sys.error(s"definitions share a name, so the hash of $name would not be stable: ${clashes.mkString(", ")}")
       // The tree structure carries no positions, so reformatting leaves the hash alone.
-      val structure = all.map(s => s.fullName + "\n" + defs(s).show(using Printer.TreeStructure)).mkString("\n")
+      val structure = all.map(s => key(s) + "\n" + defs(s).show(using Printer.TreeStructure)).mkString("\n")
       FlowStatement(
         name = name,
         kind = kind,
         text = text,
-        on = on.map(_.fullName),
+        on = on.map(key),
         hash = sha256(s"${kind.label}\n$text\n$structure"),
-        sources = all.map(s => s.fullName -> source(defs(s))).toMap
+        sources = all.map(s => key(s) -> source(defs(s))).toMap
       )
 
     // ── Statements ────────────────────────────────────────────────────────────────────────────────────────────────

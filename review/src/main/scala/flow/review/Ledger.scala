@@ -36,6 +36,10 @@ object Ledger:
 object Signing:
   val namespace = "stainless-flow"
 
+  private def run(builder: ProcessBuilder): Int =
+    try builder.start().waitFor()
+    catch case e: java.io.IOException => sys.error(s"flow signs and checks decisions with ssh-keygen (OpenSSH), which is not on the PATH: ${e.getMessage}")
+
   def payload(statement: String, hash: String, decision: String, by: String, at: String): String =
     s"stainless-flow decision\nstatement: $statement\nhash: $hash\ndecision: $decision\nby: $by\nat: $at\n"
 
@@ -44,10 +48,8 @@ object Signing:
     Files.writeString(file, payload)
     val sig = Path.of(file.toString + ".sig")
     try
-      val exit = ProcessBuilder("ssh-keygen", "-Y", "sign", "-q", "-f", key.toString, "-n", namespace, file.toString)
-        .inheritIO()
-        .start()
-        .waitFor()
+      val exit = run(ProcessBuilder("ssh-keygen", "-Y", "sign", "-q", "-f", key.toString, "-n", namespace, file.toString)
+        .inheritIO())
       if exit != 0 then sys.error(s"ssh-keygen could not sign with $key")
       Files.readString(sig)
     finally
@@ -61,13 +63,11 @@ object Signing:
       Files.writeString(data, payload)
       Files.writeString(sig, signature)
       try
-        ProcessBuilder("ssh-keygen", "-Y", "verify", "-f", allowedSigners.toString, "-I", by, "-n", namespace,
+        run(ProcessBuilder("ssh-keygen", "-Y", "verify", "-f", allowedSigners.toString, "-I", by, "-n", namespace,
           "-s", sig.toString)
           .redirectInput(data.toFile)
           .redirectOutput(ProcessBuilder.Redirect.DISCARD)
-          .redirectError(ProcessBuilder.Redirect.DISCARD)
-          .start()
-          .waitFor() == 0
+          .redirectError(ProcessBuilder.Redirect.DISCARD)) == 0
       finally
         Files.deleteIfExists(data)
         Files.deleteIfExists(sig): Unit

@@ -7,7 +7,7 @@
       "hash": "c99779b55fb69aac6df3c895381a89e399fc4de124fd23396726e9fcc33dfead",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.Knowledge$.apart": "@ghost\ndef apart(a: Booking, b: Booking): Boolean =\n  a.room != b.room || forall((t: BigInt) => !(covers(a, t) && covers(b, t)))",
         "rooms.Knowledge$.bookWhenFree": "@claim(\"A request is booked exactly when its room is free for its whole time.\")\n@ghost\ndef bookWhenFree[W](booked: W => List[Booking], bookedAfter: (Booking, W) => List[Booking],\n                    request: Booking, now: W): Boolean =\n  val bookings = booked(now)\n  bookedAfter(request, now) == when(free(bookings, request))(bookings :+ request)(bookings)",
@@ -16,7 +16,7 @@
         "rooms.Knowledge$.when": "def when[A](cond: Boolean)(thenValue: A)(otherwise: A): A = if cond then thenValue else otherwise",
         "rooms.Knowledge$.covers": "def covers(b: Booking, t: BigInt): Boolean = b.start <= t && t < b.end"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABADqcsYu+RuxSPg6GP0h07UyAnorwuDXdXbXkCoWF4IdbbFFjOe6\n3J952N1hok7EskEguX+i/mv21HOF34BaZCBA==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABA1hH1OFSV4b8/GCFlqmoCqQFKZxvn8Aoi8xU6iJP9Mq+O+qFuxp\npSjAEQiT1CR/9Fym/dfKF2Wqk1EMBetbE8BA==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "acceptWhenFree",
@@ -25,7 +25,7 @@
       "hash": "a1bfe079afa9da3b630b34b518db3273d15d9a04a1ca1a3dc8141564dd51b826",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.Knowledge$.covers": "def covers(b: Booking, t: BigInt): Boolean = b.start <= t && t < b.end",
         "rooms.Knowledge$.acceptWhenFree": "@claim(\"A request is accepted exactly when its room is free for its whole time.\")\n@ghost\ndef acceptWhenFree[W](booked: W => List[Booking], accepted: (Booking, W) => Boolean,\n                      request: Booking, now: W): Boolean =\n  accepted(request, now) == free(booked(now), request)",
@@ -33,7 +33,7 @@
         "rooms.Knowledge$.free": "@ghost\ndef free(bookings: List[Booking], request: Booking): Boolean = bookings.forall(b => apart(b, request))",
         "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABACCz5naW7BNTIsgEB4yni/SqZ7gsc+KSwSNtq3oZO5KGrABkW4B\nx1r3W/wOOHe64KHHoD1WZYfsf96laMF08gAQ==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAb+8mrZAR0lxNw/MifMsqketYQb0u0fRpnOxZpHWf+b1XKQoMfj\nxlyrEH9sSc8UxiVB8XzhXdFKYHoXwo8CpPDA==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "bookedIsStored",
@@ -42,11 +42,11 @@
       "hash": "fdcadee482d04999d4ae5193e12d9aeba16cbe2798d64820e517cbf4de382790",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.Knowledge$.bookedIsStored": "@claim(\"What is booked is what the table holds.\")\n@ghost\ndef bookedIsStored[W](booked: W => List[Booking], storedIn: W => List[Booking], now: W): Boolean =\n  booked(now) == storedIn(now)"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAQpUAy1OpEgCy9Fg5PDjVX6NL4J5MvbtEh7UKMjpHMLQxauTiqB\nHl0Vrao5lwCZuoupaig9bJq3wxSrILGfikAA==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABA7zpYMRVZTxIYPlRZQZXAh7rNYKnAX1PuSBKKPChrlM7j41kqFk\nUGO0de679ENpHgFFLyzDjqNADax84B0YXiCQ==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "bookedAfterIsStored",
@@ -55,11 +55,11 @@
       "hash": "1d4d79b6dfa78bbec6cdbdf5cc9367f567cb95b8f51c5522dcf6aaded390d3e1",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.Knowledge$.bookedAfterIsStored": "@claim(\"What is booked once a request is handled is what the table holds after booking it.\")\n@ghost\ndef bookedAfterIsStored[W](bookedAfter: (Booking, W) => List[Booking], storedIn: W => List[Booking],\n                           after: (Booking, W) => W, request: Booking, now: W): Boolean =\n  bookedAfter(request, now) == storedIn(after(request, now))"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAzz3dnwZUD94QqNJH3kQIA5dWP1u3CIZ5fiaKOZ6vbVdciFf6Ec\neGlC+PmALwoEvAZishMNqI8DeVlw00j4+iAA==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAcS4dJDsKTE6zTholzxl8EFsag1veuPEUPS/nP3/jrMb47pt0vy\nQnppfdGSak8xOk4BtOW1dIFlk3U0Au3V6QDQ==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "acceptedIsAnswered",
@@ -68,11 +68,11 @@
       "hash": "f92ac996bdaa2ff65cf69d63b0b8202c27558d417b011e8535461195ce4d7f72",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.Knowledge$.acceptedIsAnswered": "@claim(\"A request is accepted exactly when booking it answers booked.\")\n@ghost\ndef acceptedIsAnswered[W](accepted: (Booking, W) => Boolean, answer: (Booking, W) => Boolean,\n                          request: Booking, now: W): Boolean =\n  accepted(request, now) == answer(request, now)"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABA8xHDfakxI+yFRAke/IKt4rFQN1MU93fSQKoxJBwNjVjKHvMbCw\nzV2y1LeKCR6OFLHDMDNGg8cTeJTo9svwrSCQ==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABA5pfTeMXKgLAMzUKJDugDG1BqqgHaP868vBcoK/f6+IJQzVQU9N\nrDeJGdZpELRvWi+36ZYGcZakW3N5V48z4rBQ==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "storeWhenFree",
@@ -81,7 +81,7 @@
       "hash": "665e8901ba642ec631b22eee5eeaf43fc71520269624ae1f6321ebebf25ea528",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.Knowledge$.storeWhenFree": "@claim(\"A request is stored exactly when its room is free for its whole time.\")\n@ghost\ndef storeWhenFree(stored: List[Booking], storedAfter: List[Booking], request: Booking): Boolean =\n  storedAfter == when(free(stored, request))(stored :+ request)(stored)",
         "rooms.Knowledge$.apart": "@ghost\ndef apart(a: Booking, b: Booking): Boolean =\n  a.room != b.room || forall((t: BigInt) => !(covers(a, t) && covers(b, t)))",
@@ -90,7 +90,7 @@
         "rooms.Knowledge$.when": "def when[A](cond: Boolean)(thenValue: A)(otherwise: A): A = if cond then thenValue else otherwise",
         "rooms.Knowledge$.covers": "def covers(b: Booking, t: BigInt): Boolean = b.start <= t && t < b.end"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAaaYct6KV8xjkpw7e5JseDPTnRe5hXrikMSoz/egwD7oYx0g7/w\naziCOLk1GFCRGGhq/P20u04PXNGdX1NSpdDA==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAMbAY2i3wjGuOk8VnZdtoqLxPhSAbvTEuRQMqUE5lzU5W1HEt0F\nfNVrVzPnluytnd+n05dsEJm9D7vjjGu6aWAg==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "answerWhenFree",
@@ -99,7 +99,7 @@
       "hash": "2c09b35dcf943274e2ad128a724f42d6f521e948362ed7384620999d7f86c1e8",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.Knowledge$.covers": "def covers(b: Booking, t: BigInt): Boolean = b.start <= t && t < b.end",
         "rooms.Knowledge$.answerWhenFree": "@claim(\"A request is answered booked exactly when its room is free for its whole time.\")\n@ghost\ndef answerWhenFree(stored: List[Booking], request: Booking, answer: Boolean): Boolean =\n  answer == free(stored, request)",
@@ -107,7 +107,7 @@
         "rooms.Knowledge$.free": "@ghost\ndef free(bookings: List[Booking], request: Booking): Boolean = bookings.forall(b => apart(b, request))",
         "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAU1Mj8c4RJa6MESK7z+xCBIBEvhA2ka2bkVTE7PonWDPm55+kv2\n8pf4oIaMPklhEtF0rBR+6UD2NV8b59009sBg==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAXc1t4ljFpPQz6etu+Qru3lavhf8wVDdL6X5c413hu015+A/UuZ\nzCLYb1qXO/sVebrQGvH4aqUBujHS5W9HApAg==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "neverOverlap",
@@ -116,7 +116,7 @@
       "hash": "ef68e6d33bb851357537057eefe9b3340c08f642e1df3c0407ad2fe401a720af",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.Knowledge$.covers": "def covers(b: Booking, t: BigInt): Boolean = b.start <= t && t < b.end",
         "rooms.Knowledge$.pairwiseApart": "@ghost\ndef pairwiseApart(bookings: List[Booking]): Boolean = bookings match\n  case Nil()      => true\n  case Cons(h, t) => t.forall(b => apart(h, b)) && pairwiseApart(t)",
@@ -124,108 +124,207 @@
         "rooms.Knowledge$.neverOverlap": "@claim(\"The bookings stored never overlap.\")\n@ghost\ndef neverOverlap(stored: List[Booking]): Boolean = pairwiseApart(stored)",
         "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABA+6FLnOOv2GSdmUUrBX2i1K0swoT2kPhzjgF2trg9mKHqOCvmb2\nWkjxN778hQuJ+XzGmmT3MtSJ1/sxDmaL8ZCA==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABACe9dgR3W7JrF7qmVL/BlHwD8alBMpWLI1LO1cYMel7rcIVyKtG\nUaHk2ue15VD8Qt25cm1bcNuYvd+t3KkEWQCg==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "bookingsOfTheRoom",
       "kind": "claim",
       "text": "A room's bookings are all of that room.",
-      "hash": "04349ca4ff7eae3bb0986334dae6483b979c31ee5d5396b39660317d4304058b",
+      "hash": "26e1b2629a63d9875822216008f36b21bb8de3218a79b8cb37a8257976aa7bf5",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
+        "rooms.Vec (object)": "",
         "rooms.Vec.model": "@ghost @extern @pure\ndef model: List[A] = Vec.modelOf(this)",
-        "rooms.Vec": "",
+        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
         "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
         "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)",
         "rooms.Knowledge$.bookingsOfTheRoom": "@claim(\"A room's bookings are all of that room.\")\n@ghost\ndef bookingsOfTheRoom(held: RoomBookings): Boolean = held.bookings.model.forall(b => b.room == held.room)",
         "rooms.Vec$": "object Vec:\n  @extern @pure\n  def empty[A]: Vec[A] =\n    Vec(Vector.empty[A])\n  .ensuring(_.model == List[A]())\n\n  @ignore\n  def apply[A](as: A*): Vec[A] = Vec(Vector(as*))\n\n  /** What `model` is: the Vector's elements, in order. `model` is ghost, so the compiler erases it from the code\n    * that runs; this is not, so the tests can compute the model the contracts speak of.\n    */\n  @ignore\n  def modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAGE2SvP2PSN41J90ougYrj+A21fUGF8x76LrKuQQbnxAO314nsi\nphj557/iu54Bd8biH3kn0OcnufkJfqJdD8Dw==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAhrO8THy6mozcFWIfGVfCFaZDKvXv0282Y/Mj2+IoPD1vScQZjR\nU4LSN3Jqw2jSD23RUsVVhKirCbd7waMsS6Bg==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "roomBookingsApart",
       "kind": "claim",
       "text": "A room's bookings never overlap.",
-      "hash": "36b6600e3da7711d95fd4e368e83f1d6fc5cd34cb85c54dd9cb04024ca201688",
+      "hash": "b37ee6046f3ef0b9cc9c6d359fa4674ac1926c6b2deb0d1bef7b54c96a95f7f7",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.Knowledge$.roomBookingsApart": "@claim(\"A room's bookings never overlap.\")\n@ghost\ndef roomBookingsApart(held: RoomBookings): Boolean = pairwiseApart(held.bookings.model)",
         "rooms.Knowledge$.covers": "def covers(b: Booking, t: BigInt): Boolean = b.start <= t && t < b.end",
         "rooms.Knowledge$.pairwiseApart": "@ghost\ndef pairwiseApart(bookings: List[Booking]): Boolean = bookings match\n  case Nil()      => true\n  case Cons(h, t) => t.forall(b => apart(h, b)) && pairwiseApart(t)",
         "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
+        "rooms.Vec (object)": "",
         "rooms.Vec$": "object Vec:\n  @extern @pure\n  def empty[A]: Vec[A] =\n    Vec(Vector.empty[A])\n  .ensuring(_.model == List[A]())\n\n  @ignore\n  def apply[A](as: A*): Vec[A] = Vec(Vector(as*))\n\n  /** What `model` is: the Vector's elements, in order. `model` is ghost, so the compiler erases it from the code\n    * that runs; this is not, so the tests can compute the model the contracts speak of.\n    */\n  @ignore\n  def modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
         "rooms.Knowledge$.apart": "@ghost\ndef apart(a: Booking, b: Booking): Boolean =\n  a.room != b.room || forall((t: BigInt) => !(covers(a, t) && covers(b, t)))",
         "rooms.Vec.model": "@ghost @extern @pure\ndef model: List[A] = Vec.modelOf(this)",
-        "rooms.Vec": "",
+        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
         "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
         "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAjLZgsPAF8RnUrRHp5SLsKO9CkMW78OcY23yL899AJCLcpdQewf\nAEXMZbhyGUhi7JE0oxYzcAGBsKQTeLpMgmDA==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAsabh9SMb5TKu6sqRoWdUhjc+TGzAZ4azCghyzZLrd28hZhfVQ8\npBBx0x1pDy86H/AI/ssqW9yb4sX1wJeg9eDA==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "grantWhenFree",
       "kind": "claim",
       "text": "A request is granted exactly when its room is free for its whole time.",
-      "hash": "452fd6051123fc3e5259324e0f0b644db71f9104c2cc057e0862150652a8b046",
+      "hash": "caac2c60b69f6e2d429c27137220779f0123b7714674dfe0e9607931921cccd5",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.Knowledge$.covers": "def covers(b: Booking, t: BigInt): Boolean = b.start <= t && t < b.end",
         "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
+        "rooms.Vec (object)": "",
         "rooms.Vec$": "object Vec:\n  @extern @pure\n  def empty[A]: Vec[A] =\n    Vec(Vector.empty[A])\n  .ensuring(_.model == List[A]())\n\n  @ignore\n  def apply[A](as: A*): Vec[A] = Vec(Vector(as*))\n\n  /** What `model` is: the Vector's elements, in order. `model` is ghost, so the compiler erases it from the code\n    * that runs; this is not, so the tests can compute the model the contracts speak of.\n    */\n  @ignore\n  def modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
         "rooms.Knowledge$.apart": "@ghost\ndef apart(a: Booking, b: Booking): Boolean =\n  a.room != b.room || forall((t: BigInt) => !(covers(a, t) && covers(b, t)))",
         "rooms.Vec.model": "@ghost @extern @pure\ndef model: List[A] = Vec.modelOf(this)",
         "rooms.Knowledge$.grantWhenFree": "@claim(\"A request is granted exactly when its room is free for its whole time.\")\n@ghost\ndef grantWhenFree(held: RoomBookings, request: Booking, granted: Boolean): Boolean =\n  granted == free(held.bookings.model, request)",
-        "rooms.Vec": "",
+        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
         "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
         "rooms.Knowledge$.free": "@ghost\ndef free(bookings: List[Booking], request: Booking): Boolean = bookings.forall(b => apart(b, request))",
         "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABARDoLJyxY5Hf9f8pzFO3iRZEuWxXNH5f2X5pHgd8c1RL7vhhA/m\nB9GINOohoKhFd3SqarZ1q3WMkN6i4SZz81Cg==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAp9h6rBXChWS63kNSZOMWi6HTGNB20fsRziMMaTf0yvJhQ8wpIe\n7s9/5ZMpkI7MAsuofMk5rUT85w8g8e4cPuCA==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "grantWhenNoOverlap",
       "kind": "claim",
       "text": "A request is granted exactly when it overlaps no booking of its room.",
-      "hash": "5e0ba7c7cd241c76a8232b2a97c79fa2c07291ba30a157152d1f8d1715127580",
+      "hash": "0519b07d15c7f3b44fa3b95a15f5a94ac22db0c0eb79e1e50863428828dc654c",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.Knowledge$.noOverlap": "def noOverlap(a: Booking, b: Booking): Boolean = a.room != b.room || a.end <= b.start || b.end <= a.start",
         "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
+        "rooms.Vec (object)": "",
         "rooms.Knowledge$.grantWhenNoOverlap": "@claim(\"A request is granted exactly when it overlaps no booking of its room.\")\n@ghost\ndef grantWhenNoOverlap(held: RoomBookings, request: Booking, granted: Boolean): Boolean =\n  granted == held.bookings.model.forall(b => noOverlap(b, request))",
         "rooms.Vec$": "object Vec:\n  @extern @pure\n  def empty[A]: Vec[A] =\n    Vec(Vector.empty[A])\n  .ensuring(_.model == List[A]())\n\n  @ignore\n  def apply[A](as: A*): Vec[A] = Vec(Vector(as*))\n\n  /** What `model` is: the Vector's elements, in order. `model` is ghost, so the compiler erases it from the code\n    * that runs; this is not, so the tests can compute the model the contracts speak of.\n    */\n  @ignore\n  def modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
         "rooms.Vec.model": "@ghost @extern @pure\ndef model: List[A] = Vec.modelOf(this)",
-        "rooms.Vec": "",
+        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
         "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
         "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAHdGVajIg9q5DHeJaCzdiNypUK/dV44sJJpvP6rrmEymu4Xx7uU\n7wR3OZ7YtXugp8kNJjZa/uDdBDQLq+HWLvBg==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAzLwGKTvn/yGTxy00SMO/P9g3rEvSYj6XYFCTocfTaiOsj3HiXl\n2IYtL/8rUahcIYfgupE/fAAcr/lQJcM676AA==\n-----END SSH SIGNATURE-----\n"
+    },
+    {
+      "statement": "bookingsEndAfterStart",
+      "kind": "assumption",
+      "text": "Every booking ends after it starts.",
+      "hash": "85ce409b26d7b879a17c6acf9f5291f8f64566ebeaca0cbafc5d6f8d958060c7",
+      "decision": "accepted",
+      "by": "demo-developer",
+      "at": "2026-10-30T17:49:28Z",
+      "sources": {
+        "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
+      },
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABA2qcVux6L9+hx1/sWU6UyWvDUK0I9BS3koEEO9qXeSUgfHfxuCb\ncd06KEtKHZUYiNHg/gJCmfE50tU3iYcMm4Cg==\n-----END SSH SIGNATURE-----\n"
+    },
+    {
+      "statement": "tableMatchesModel",
+      "kind": "assumption",
+      "text": "The table gives a room's bookings in the order they were added, and adds one at the end.",
+      "hash": "d5fd295a3f8ae2c2ea2a38d82d4232b2614c8316b9cac31d3ec55e17acf7b617",
+      "decision": "accepted",
+      "by": "demo-developer",
+      "at": "2026-10-30T17:49:28Z",
+      "sources": {
+        "rooms.SqliteBookings.inRoom": "def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))",
+        "rooms.Vec (object)": "",
+        "rooms.SqliteBookings.insert": "private def insert(b: Booking): Unit = synchronized:\n  val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n  List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n  row.executeUpdate()",
+        "rooms.SqliteBookings.bookingsIn": "private def bookingsIn(room: String): Vector[Booking] = synchronized:\n  val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n  query.setString(1, room)\n  read(query).toVector",
+        "rooms.BookingTable": "final class BookingTable private (@extern val db: SqliteBookings, @ghost var stored: List[Booking]):\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @extern @pure\n  def inRoom(room: String): RoomBookings =\n    db.inRoom(room)\n  .ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n  @extern\n  private[rooms] def add(booking: Booking): Unit =\n    db.add(booking)\n  .ensuring(_ => stored == old(this).stored :+ booking)",
+        "rooms.Vec$": "object Vec:\n  @extern @pure\n  def empty[A]: Vec[A] =\n    Vec(Vector.empty[A])\n  .ensuring(_.model == List[A]())\n\n  @ignore\n  def apply[A](as: A*): Vec[A] = Vec(Vector(as*))\n\n  /** What `model` is: the Vector's elements, in order. `model` is ghost, so the compiler erases it from the code\n    * that runs; this is not, so the tests can compute the model the contracts speak of.\n    */\n  @ignore\n  def modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
+        "rooms.SqliteBookings.read": "private def read(query: PreparedStatement): List[Booking] =\n  val rows = query.executeQuery()\n  Iterator.continually(rows).takeWhile(_.next())\n    .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
+        "rooms.BookingTable.add": "@assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n@assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n@extern\nprivate[rooms] def add(booking: Booking): Unit =\n  db.add(booking)\n.ensuring(_ => stored == old(this).stored :+ booking)",
+        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
+        "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
+        "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
+        "rooms.SqliteBookings": "@ignore\nfinal class SqliteBookings private (conn: Connection):\n  conn.createStatement().executeUpdate(\"create table if not exists bookings \" +\n    \"(id integer primary key, room text not null, starts text not null, ends text not null)\")\n\n  def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))\n\n  def add(booking: Booking): Unit = insert(booking)\n\n  /** Runs `body` with no other booking in between: what `oneAtATime` assumes. */\n  def atomically[A](body: => A): A = synchronized(body)\n\n  def held: List[Booking] = synchronized:\n    read(conn.prepareStatement(\"select room, starts, ends from bookings order by id\"))\n\n  private def bookingsIn(room: String): Vector[Booking] = synchronized:\n    val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n    query.setString(1, room)\n    read(query).toVector\n\n  private def insert(b: Booking): Unit = synchronized:\n    val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n    List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n    row.executeUpdate()\n\n  private def read(query: PreparedStatement): List[Booking] =\n    val rows = query.executeQuery()\n    Iterator.continually(rows).takeWhile(_.next())\n      .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
+        "rooms.Vec.model": "@ghost @extern @pure\ndef model: List[A] = Vec.modelOf(this)",
+        "rooms.BookingTable.inRoom": "@assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n@extern @pure\ndef inRoom(room: String): RoomBookings =\n  db.inRoom(room)\n.ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))",
+        "rooms.SqliteBookings.add": "def add(booking: Booking): Unit = insert(booking)",
+        "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
+      },
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAlGXVqz5ojhrjC7MvoWcrXkoS3El4Z9TWP1fGYKlqjwp7ajvr5D\nQb8FHWR0KIP4JJL0l1XfNMlfEBRYwWRaRqBw==\n-----END SSH SIGNATURE-----\n"
+    },
+    {
+      "statement": "onlyBookingWrites",
+      "kind": "assumption",
+      "text": "Only booking writes to the table.",
+      "hash": "b9bdc669cf3082c4d61c951b47d8c35c85495b409271efdca9760b5a7601261c",
+      "decision": "accepted",
+      "by": "demo-developer",
+      "at": "2026-10-30T17:49:28Z",
+      "sources": {
+        "rooms.SqliteBookings.inRoom": "def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))",
+        "rooms.Vec (object)": "",
+        "rooms.SqliteBookings.insert": "private def insert(b: Booking): Unit = synchronized:\n  val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n  List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n  row.executeUpdate()",
+        "rooms.SqliteBookings.bookingsIn": "private def bookingsIn(room: String): Vector[Booking] = synchronized:\n  val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n  query.setString(1, room)\n  read(query).toVector",
+        "rooms.BookingTable": "final class BookingTable private (@extern val db: SqliteBookings, @ghost var stored: List[Booking]):\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @extern @pure\n  def inRoom(room: String): RoomBookings =\n    db.inRoom(room)\n  .ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n  @extern\n  private[rooms] def add(booking: Booking): Unit =\n    db.add(booking)\n  .ensuring(_ => stored == old(this).stored :+ booking)",
+        "rooms.Vec$": "object Vec:\n  @extern @pure\n  def empty[A]: Vec[A] =\n    Vec(Vector.empty[A])\n  .ensuring(_.model == List[A]())\n\n  @ignore\n  def apply[A](as: A*): Vec[A] = Vec(Vector(as*))\n\n  /** What `model` is: the Vector's elements, in order. `model` is ghost, so the compiler erases it from the code\n    * that runs; this is not, so the tests can compute the model the contracts speak of.\n    */\n  @ignore\n  def modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
+        "rooms.SqliteBookings.read": "private def read(query: PreparedStatement): List[Booking] =\n  val rows = query.executeQuery()\n  Iterator.continually(rows).takeWhile(_.next())\n    .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
+        "rooms.Vec.model": "@ghost @extern @pure\ndef model: List[A] = Vec.modelOf(this)",
+        "rooms.BookingTable.add": "@assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n@assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n@extern\nprivate[rooms] def add(booking: Booking): Unit =\n  db.add(booking)\n.ensuring(_ => stored == old(this).stored :+ booking)",
+        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
+        "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
+        "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
+        "rooms.SqliteBookings": "@ignore\nfinal class SqliteBookings private (conn: Connection):\n  conn.createStatement().executeUpdate(\"create table if not exists bookings \" +\n    \"(id integer primary key, room text not null, starts text not null, ends text not null)\")\n\n  def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))\n\n  def add(booking: Booking): Unit = insert(booking)\n\n  /** Runs `body` with no other booking in between: what `oneAtATime` assumes. */\n  def atomically[A](body: => A): A = synchronized(body)\n\n  def held: List[Booking] = synchronized:\n    read(conn.prepareStatement(\"select room, starts, ends from bookings order by id\"))\n\n  private def bookingsIn(room: String): Vector[Booking] = synchronized:\n    val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n    query.setString(1, room)\n    read(query).toVector\n\n  private def insert(b: Booking): Unit = synchronized:\n    val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n    List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n    row.executeUpdate()\n\n  private def read(query: PreparedStatement): List[Booking] =\n    val rows = query.executeQuery()\n    Iterator.continually(rows).takeWhile(_.next())\n      .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
+        "rooms.SqliteBookings.add": "def add(booking: Booking): Unit = insert(booking)",
+        "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
+      },
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAhKmJIujlMnKrnB+adiqKWPd/wwrFM1W0Q+SAoXLdMNwzqlQssw\nF9+WRR4LbldOdA1P7f/B2T2LIAhdrUWEdICA==\n-----END SSH SIGNATURE-----\n"
+    },
+    {
+      "statement": "startsEmpty",
+      "kind": "assumption",
+      "text": "The table starts empty.",
+      "hash": "89f0a360c86267cc0af68aa1261bcd0bd5f3d883abe7d4d13303f012a0cd608b",
+      "decision": "accepted",
+      "by": "demo-developer",
+      "at": "2026-10-30T17:49:28Z",
+      "sources": {
+        "rooms.SqliteBookings.inRoom": "def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))",
+        "rooms.Vec (object)": "",
+        "rooms.SqliteBookings.insert": "private def insert(b: Booking): Unit = synchronized:\n  val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n  List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n  row.executeUpdate()",
+        "rooms.SqliteBookings.bookingsIn": "private def bookingsIn(room: String): Vector[Booking] = synchronized:\n  val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n  query.setString(1, room)\n  read(query).toVector",
+        "rooms.BookingTable": "final class BookingTable private (@extern val db: SqliteBookings, @ghost var stored: List[Booking]):\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @extern @pure\n  def inRoom(room: String): RoomBookings =\n    db.inRoom(room)\n  .ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n  @extern\n  private[rooms] def add(booking: Booking): Unit =\n    db.add(booking)\n  .ensuring(_ => stored == old(this).stored :+ booking)",
+        "rooms.Vec$": "object Vec:\n  @extern @pure\n  def empty[A]: Vec[A] =\n    Vec(Vector.empty[A])\n  .ensuring(_.model == List[A]())\n\n  @ignore\n  def apply[A](as: A*): Vec[A] = Vec(Vector(as*))\n\n  /** What `model` is: the Vector's elements, in order. `model` is ghost, so the compiler erases it from the code\n    * that runs; this is not, so the tests can compute the model the contracts speak of.\n    */\n  @ignore\n  def modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
+        "rooms.SqliteBookings.read": "private def read(query: PreparedStatement): List[Booking] =\n  val rows = query.executeQuery()\n  Iterator.continually(rows).takeWhile(_.next())\n    .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
+        "rooms.Vec.model": "@ghost @extern @pure\ndef model: List[A] = Vec.modelOf(this)",
+        "rooms.BookingTable$.fresh": "@assumption(\"startsEmpty\", \"The table starts empty.\")\n@extern\ndef fresh(db: SqliteBookings): BookingTable =\n  BookingTable(db, Nil())\n.ensuring(_.stored == Nil[Booking]())",
+        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
+        "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
+        "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
+        "rooms.SqliteBookings": "@ignore\nfinal class SqliteBookings private (conn: Connection):\n  conn.createStatement().executeUpdate(\"create table if not exists bookings \" +\n    \"(id integer primary key, room text not null, starts text not null, ends text not null)\")\n\n  def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))\n\n  def add(booking: Booking): Unit = insert(booking)\n\n  /** Runs `body` with no other booking in between: what `oneAtATime` assumes. */\n  def atomically[A](body: => A): A = synchronized(body)\n\n  def held: List[Booking] = synchronized:\n    read(conn.prepareStatement(\"select room, starts, ends from bookings order by id\"))\n\n  private def bookingsIn(room: String): Vector[Booking] = synchronized:\n    val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n    query.setString(1, room)\n    read(query).toVector\n\n  private def insert(b: Booking): Unit = synchronized:\n    val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n    List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n    row.executeUpdate()\n\n  private def read(query: PreparedStatement): List[Booking] =\n    val rows = query.executeQuery()\n    Iterator.continually(rows).takeWhile(_.next())\n      .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
+        "rooms.SqliteBookings.add": "def add(booking: Booking): Unit = insert(booking)",
+        "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
+      },
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABA4DkkUN9K8TBR5IsXzwlsl56FSpzk2zKtVXNXccVq4F/c5jZzK2\nrcwBOK5V10bicsqJY1lHfbmqpUg+XWdyt7Cg==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "oneAtATime",
       "kind": "assumption",
       "text": "Bookings are processed one at a time.",
-      "hash": "c6230c5039dcc68ffa04235f20f6397d0626d9d14ddc80ea6971d790c914cbae",
+      "hash": "9c723029f62c64af3cf27d2b27d5822f87e694afb98e8849d6a5b94b7c7d7847",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
-        "rooms.Purpose$.book": "def book(table: BookingTable, request: Booking): Boolean =\n  require(neverOverlap(table.stored))\n  @ghost val now = table.stored\n  val answer = Book.bookIfGranted(table, request)\n  ghostExpr:\n    bookWhenFreeStep(asItStands, leaves(table.stored), asItStands, leaves(table.stored), request, now)\n    acceptWhenFreeStep(asItStands, answers(answer), asItStands, answers(answer), request, now)\n  answer\n.ensuring(answer =>\n  bookWhenFree(asItStands, leaves(table.stored), request, old(table).stored) &&\n  acceptWhenFree(asItStands, answers(answer), request, old(table).stored) &&\n  neverOverlap(table.stored))",
-        "rooms.BookingTable": "",
+        "rooms.SqliteBookings.bookingsIn": "private def bookingsIn(room: String): Vector[Booking] = synchronized:\n  val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n  query.setString(1, room)\n  read(query).toVector",
+        "rooms.BookingTable": "final class BookingTable private (@extern val db: SqliteBookings, @ghost var stored: List[Booking]):\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @extern @pure\n  def inRoom(room: String): RoomBookings =\n    db.inRoom(room)\n  .ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n  @extern\n  private[rooms] def add(booking: Booking): Unit =\n    db.add(booking)\n  .ensuring(_ => stored == old(this).stored :+ booking)",
         "rooms.SqliteBookings.read": "private def read(query: PreparedStatement): List[Booking] =\n  val rows = query.executeQuery()\n  Iterator.continually(rows).takeWhile(_.next())\n    .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
         "rooms.Purpose$": "object Purpose:\n  /** The world as it stands: what the table holds. */\n  @ghost\n  def asItStands: List[Booking] => List[Booking] = world => world\n\n  /** What a run of booking leaves in the table. */\n  @ghost\n  def leaves(stored: List[Booking]): (Booking, List[Booking]) => List[Booking] = (_, _) => stored\n\n  /** What a run of booking answers. */\n  @ghost\n  def answers(answer: Boolean): (Booking, List[Booking]) => Boolean = (_, _) => answer\n\n  /** Booking a request, with both roots proven of the run. This is what `Rooms.bookOn` runs. */\n  def book(table: BookingTable, request: Booking): Boolean =\n    require(neverOverlap(table.stored))\n    @ghost val now = table.stored\n    val answer = Book.bookIfGranted(table, request)\n    ghostExpr:\n      bookWhenFreeStep(asItStands, leaves(table.stored), asItStands, leaves(table.stored), request, now)\n      acceptWhenFreeStep(asItStands, answers(answer), asItStands, answers(answer), request, now)\n    answer\n  .ensuring(answer =>\n    bookWhenFree(asItStands, leaves(table.stored), request, old(table).stored) &&\n    acceptWhenFree(asItStands, answers(answer), request, old(table).stored) &&\n    neverOverlap(table.stored))",
         "rooms.Knowledge$.apart": "@ghost\ndef apart(a: Booking, b: Booking): Boolean =\n  a.room != b.room || forall((t: BigInt) => !(covers(a, t) && covers(b, t)))",
-        "rooms.Knowledge$.acceptedIsAnswered": "@claim(\"A request is accepted exactly when booking it answers booked.\")\n@ghost\ndef acceptedIsAnswered[W](accepted: (Booking, W) => Boolean, answer: (Booking, W) => Boolean,\n                          request: Booking, now: W): Boolean =\n  accepted(request, now) == answer(request, now)",
         "rooms.Knowledge$.bookWhenFreeStep": "@ghost\ndef bookWhenFreeStep[W](booked: W => List[Booking], bookedAfter: (Booking, W) => List[Booking],\n                        storedIn: W => List[Booking], after: (Booking, W) => W,\n                        request: Booking, now: W): Unit =\n  require(\n    bookedIsStored(booked, storedIn, now) &&\n    bookedAfterIsStored(bookedAfter, storedIn, after, request, now) &&\n    storeWhenFree(storedIn(now), storedIn(after(request, now)), request))\n.ensuring(_ => bookWhenFree(booked, bookedAfter, request, now))",
-        "rooms.Vec": "",
+        "rooms.Knowledge$.bookWhenFree": "@claim(\"A request is booked exactly when its room is free for its whole time.\")\n@ghost\ndef bookWhenFree[W](booked: W => List[Booking], bookedAfter: (Booking, W) => List[Booking],\n                    request: Booking, now: W): Boolean =\n  val bookings = booked(now)\n  bookedAfter(request, now) == when(free(bookings, request))(bookings :+ request)(bookings)",
+        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
         "rooms.Purpose$.leaves": "@ghost\ndef leaves(stored: List[Booking]): (Booking, List[Booking]) => List[Booking] = (_, _) => stored",
         "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
         "rooms.Calendar.grants": "def grants(request: Booking): Boolean =\n  val i = byStart.search(request)(using startOrder).insertionPoint\n  val before = byStart.lift(i - 1)\n  val after = byStart.lift(i)\n  val endsInTime = before.forall(_.end <= request.start)\n  val startsAfter = after.forall(_.start >= request.end)\n  request.room != held.room || (endsInTime && startsAfter)",
@@ -235,16 +334,17 @@
         "rooms.Knowledge$.when": "def when[A](cond: Boolean)(thenValue: A)(otherwise: A): A = if cond then thenValue else otherwise",
         "rooms.Knowledge$.covers": "def covers(b: Booking, t: BigInt): Boolean = b.start <= t && t < b.end",
         "rooms.SqliteBookings.inRoom": "def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))",
-        "rooms.Knowledge$.pairwiseApart": "@ghost\ndef pairwiseApart(bookings: List[Booking]): Boolean = bookings match\n  case Nil()      => true\n  case Cons(h, t) => t.forall(b => apart(h, b)) && pairwiseApart(t)",
         "rooms.Knowledge$.noOverlap": "def noOverlap(a: Booking, b: Booking): Boolean = a.room != b.room || a.end <= b.start || b.end <= a.start",
+        "rooms.BookingTable (object)": "",
+        "rooms.Knowledge$.pairwiseApart": "@ghost\ndef pairwiseApart(bookings: List[Booking]): Boolean = bookings match\n  case Nil()      => true\n  case Cons(h, t) => t.forall(b => apart(h, b)) && pairwiseApart(t)",
         "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
         "rooms.SqliteBookings": "@ignore\nfinal class SqliteBookings private (conn: Connection):\n  conn.createStatement().executeUpdate(\"create table if not exists bookings \" +\n    \"(id integer primary key, room text not null, starts text not null, ends text not null)\")\n\n  def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))\n\n  def add(booking: Booking): Unit = insert(booking)\n\n  /** Runs `body` with no other booking in between: what `oneAtATime` assumes. */\n  def atomically[A](body: => A): A = synchronized(body)\n\n  def held: List[Booking] = synchronized:\n    read(conn.prepareStatement(\"select room, starts, ends from bookings order by id\"))\n\n  private def bookingsIn(room: String): Vector[Booking] = synchronized:\n    val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n    query.setString(1, room)\n    read(query).toVector\n\n  private def insert(b: Booking): Unit = synchronized:\n    val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n    List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n    row.executeUpdate()\n\n  private def read(query: PreparedStatement): List[Booking] =\n    val rows = query.executeQuery()\n    Iterator.continually(rows).takeWhile(_.next())\n      .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
+        "rooms.Purpose$.book": "def book(table: BookingTable, request: Booking): Boolean =\n  require(neverOverlap(table.stored))\n  @ghost val now = table.stored\n  val answer = Book.bookIfGranted(table, request)\n  ghostExpr:\n    bookWhenFreeStep(asItStands, leaves(table.stored), asItStands, leaves(table.stored), request, now)\n    acceptWhenFreeStep(asItStands, answers(answer), asItStands, answers(answer), request, now)\n  answer\n.ensuring(answer =>\n  bookWhenFree(asItStands, leaves(table.stored), request, old(table).stored) &&\n  acceptWhenFree(asItStands, answers(answer), request, old(table).stored) &&\n  neverOverlap(table.stored))",
+        "rooms.Vec (object)": "",
         "rooms.Knowledge$.acceptWhenFree": "@claim(\"A request is accepted exactly when its room is free for its whole time.\")\n@ghost\ndef acceptWhenFree[W](booked: W => List[Booking], accepted: (Booking, W) => Boolean,\n                      request: Booking, now: W): Boolean =\n  accepted(request, now) == free(booked(now), request)",
         "rooms.SqliteBookings.insert": "private def insert(b: Booking): Unit = synchronized:\n  val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n  List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n  row.executeUpdate()",
         "rooms.Knowledge$.apartOfTheRoom": "@ghost\ndef apartOfTheRoom(stored: List[Booking], room: String): Unit =\n  require(pairwiseApart(stored))\n  decreases(stored)\n  stored match\n    case Nil() => ()\n    case Cons(h, t) =>\n      apartFromFiltered(h, t, room)\n      apartOfTheRoom(t, room)\n.ensuring(_ => pairwiseApart(stored.filter(b => b.room == room)))",
         "rooms.Book$": "object Book:\n  /** Booking a request: whether it was booked. Reads the room's bookings from the table, asks the calendar, and\n    * adds the booking if it is granted.\n    *\n    * Proven: storeWhenFree, answerWhenFree, and that neverOverlap is kept. Assumed: tableMatchesModel (the table's\n    * contracts), bookingsEndAfterStart (the invariant of Booking), and oneAtATime (callers go through `bookOn`).\n    */\n  def bookIfGranted(table: BookingTable, request: Booking): Boolean =\n    require(neverOverlap(table.stored))\n    val held = table.inRoom(request.room)\n    ghostExpr:\n      ofTheRoom(table.stored, request.room)\n      apartOfTheRoom(table.stored, request.room)\n    val booked = Granted.granted(held, request)\n    ghostExpr:\n      grantWhenFreeStep(held, request, booked)\n      freeOfTheRoom(table.stored, request)\n      if booked then neverOverlapKept(table.stored, request)\n    if booked then table.add(request)\n    booked\n  .ensuring(res =>\n    answerWhenFree(old(table).stored, request, res) &&\n    storeWhenFree(old(table).stored, table.stored, request) &&\n    neverOverlap(table.stored))",
-        "rooms.SqliteBookings.bookingsIn": "private def bookingsIn(room: String): Vector[Booking] = synchronized:\n  val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n  query.setString(1, room)\n  read(query).toVector",
-        "rooms.Purpose": "",
         "rooms.Granted$": "object Granted:\n  /** Whether a request is granted, given its room's bookings.\n    *\n    * Tested, not proven: the body is plain Scala that Stainless does not read. Its contract is grantWhenNoOverlap,\n    * under the hypotheses bookingsOfTheRoom and roomBookingsApart; Stainless proves those hypotheses where booking\n    * calls it, trusts the result, and `CalendarSpec` tests it on generated cases.\n    */\n  @extern @pure\n  def granted(held: RoomBookings, request: Booking): Boolean =\n    require(bookingsOfTheRoom(held) && roomBookingsApart(held))\n    Calendar(held).grants(request)\n  .ensuring(res => grantWhenNoOverlap(held, request, res))",
         "rooms.Knowledge$.grantWhenNoOverlap": "@claim(\"A request is granted exactly when it overlaps no booking of its room.\")\n@ghost\ndef grantWhenNoOverlap(held: RoomBookings, request: Booking, granted: Boolean): Boolean =\n  granted == held.bookings.model.forall(b => noOverlap(b, request))",
         "rooms.Knowledge$.noOverlapIsFree": "@ghost\ndef noOverlapIsFree(bookings: List[Booking], request: Booking): Unit =\n  decreases(bookings)\n  bookings match\n    case Nil() => ()\n    case Cons(h, t) =>\n      apartIffNoOverlap(h, request)\n      noOverlapIsFree(t, request)\n.ensuring(_ => bookings.forall(b => noOverlap(b, request)) == free(bookings, request))",
@@ -267,134 +367,44 @@
         "rooms.Rooms$.bookOn": "@assumption(\"oneAtATime\", \"Bookings are processed one at a time.\")\ndef bookOn(sql: SqliteBookings): Booking => Boolean =\n  val table = BookingTable.fresh(sql)\n  request => sql.atomically(Purpose.book(table, request))",
         "rooms.BookingTable$.fresh": "@assumption(\"startsEmpty\", \"The table starts empty.\")\n@extern\ndef fresh(db: SqliteBookings): BookingTable =\n  BookingTable(db, Nil())\n.ensuring(_.stored == Nil[Booking]())",
         "rooms.Knowledge$.apartIffNoOverlap": "@ghost\ndef apartIffNoOverlap(a: Booking, b: Booking): Unit =\n  if a.room == b.room && !noOverlap(a, b) then\n    val t = if a.start >= b.start then a.start else b.start\n    assert(covers(a, t) && covers(b, t))\n.ensuring(_ => apart(a, b) == noOverlap(a, b))",
+        "rooms.Knowledge$.acceptedIsAnswered": "@claim(\"A request is accepted exactly when booking it answers booked.\")\n@ghost\ndef acceptedIsAnswered[W](accepted: (Booking, W) => Boolean, answer: (Booking, W) => Boolean,\n                          request: Booking, now: W): Boolean =\n  accepted(request, now) == answer(request, now)",
+        "rooms.Granted (object)": "",
         "rooms.BookingTable.add": "@assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n@assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n@extern\nprivate[rooms] def add(booking: Booking): Unit =\n  db.add(booking)\n.ensuring(_ => stored == old(this).stored :+ booking)",
         "rooms.Knowledge$.grantWhenFree": "@claim(\"A request is granted exactly when its room is free for its whole time.\")\n@ghost\ndef grantWhenFree(held: RoomBookings, request: Booking, granted: Boolean): Boolean =\n  granted == free(held.bookings.model, request)",
         "rooms.Knowledge$.freeOfTheRoom": "@ghost\ndef freeOfTheRoom(stored: List[Booking], request: Booking): Unit =\n  decreases(stored)\n  stored match\n    case Nil()      => ()\n    case Cons(_, t) => freeOfTheRoom(t, request)\n.ensuring(_ => free(stored.filter(b => b.room == request.room), request) == free(stored, request))",
         "rooms.Knowledge$.bookedAfterIsStored": "@claim(\"What is booked once a request is handled is what the table holds after booking it.\")\n@ghost\ndef bookedAfterIsStored[W](bookedAfter: (Booking, W) => List[Booking], storedIn: W => List[Booking],\n                           after: (Booking, W) => W, request: Booking, now: W): Boolean =\n  bookedAfter(request, now) == storedIn(after(request, now))",
         "rooms.Knowledge$.neverOverlap": "@claim(\"The bookings stored never overlap.\")\n@ghost\ndef neverOverlap(stored: List[Booking]): Boolean = pairwiseApart(stored)",
         "rooms.Knowledge$.apartFromAppended": "@ghost\ndef apartFromAppended(h: Booking, t: List[Booking], request: Booking): Unit =\n  require(t.forall(b => apart(h, b)) && apart(h, request))\n  decreases(t)\n  t match\n    case Nil()       => ()\n    case Cons(_, t2) => apartFromAppended(h, t2, request)\n.ensuring(_ => (t :+ request).forall(b => apart(h, b)))",
-        "rooms.Granted": "",
-        "rooms.Knowledge$.bookWhenFree": "@claim(\"A request is booked exactly when its room is free for its whole time.\")\n@ghost\ndef bookWhenFree[W](booked: W => List[Booking], bookedAfter: (Booking, W) => List[Booking],\n                    request: Booking, now: W): Boolean =\n  val bookings = booked(now)\n  bookedAfter(request, now) == when(free(bookings, request))(bookings :+ request)(bookings)",
+        "rooms.Book (object)": "",
+        "rooms.Purpose (object)": "",
         "rooms.Knowledge$.free": "@ghost\ndef free(bookings: List[Booking], request: Booking): Boolean = bookings.forall(b => apart(b, request))",
         "rooms.Knowledge$.bookedIsStored": "@claim(\"What is booked is what the table holds.\")\n@ghost\ndef bookedIsStored[W](booked: W => List[Booking], storedIn: W => List[Booking], now: W): Boolean =\n  booked(now) == storedIn(now)",
         "rooms.Knowledge$.grantWhenFreeStep": "@ghost\ndef grantWhenFreeStep(held: RoomBookings, request: Booking, granted: Boolean): Unit =\n  require(grantWhenNoOverlap(held, request, granted))\n  noOverlapIsFree(held.bookings.model, request)\n.ensuring(_ => grantWhenFree(held, request, granted))",
         "rooms.SqliteBookings.add": "def add(booking: Booking): Unit = insert(booking)",
-        "rooms.Book": "",
         "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABATzLJpISINVJq0q7RcpIJAgaz1kQgE3Gcv7nUNE6m2Wt9SNzh7i\ndoBaUk/zp6lVJIBWgqZfyRm3f1wkl65xXYCg==\n-----END SSH SIGNATURE-----\n"
-    },
-    {
-      "statement": "bookingsEndAfterStart",
-      "kind": "assumption",
-      "text": "Every booking ends after it starts.",
-      "hash": "85ce409b26d7b879a17c6acf9f5291f8f64566ebeaca0cbafc5d6f8d958060c7",
-      "decision": "accepted",
-      "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
-      "sources": {
-        "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
-      },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABA0lsvDQAD1+4k539NlHPkd9luNYFWYNuZWU1ySInsLEkMcZ+iR2\nNcYwlAFOHwJ+KRDZahx6F/IYIoEpQG9mC6Cg==\n-----END SSH SIGNATURE-----\n"
-    },
-    {
-      "statement": "tableMatchesModel",
-      "kind": "assumption",
-      "text": "The table gives a room's bookings in the order they were added, and adds one at the end.",
-      "hash": "3b4f07cfab195f69183ea1c54ecc12b58043f6336be5afbbdc9480c924a00ef1",
-      "decision": "accepted",
-      "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
-      "sources": {
-        "rooms.SqliteBookings.inRoom": "def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))",
-        "rooms.SqliteBookings.insert": "private def insert(b: Booking): Unit = synchronized:\n  val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n  List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n  row.executeUpdate()",
-        "rooms.SqliteBookings.bookingsIn": "private def bookingsIn(room: String): Vector[Booking] = synchronized:\n  val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n  query.setString(1, room)\n  read(query).toVector",
-        "rooms.BookingTable": "final class BookingTable private (@extern val db: SqliteBookings, @ghost var stored: List[Booking]):\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @extern @pure\n  def inRoom(room: String): RoomBookings =\n    db.inRoom(room)\n  .ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n  @extern\n  private[rooms] def add(booking: Booking): Unit =\n    db.add(booking)\n  .ensuring(_ => stored == old(this).stored :+ booking)",
-        "rooms.Vec$": "object Vec:\n  @extern @pure\n  def empty[A]: Vec[A] =\n    Vec(Vector.empty[A])\n  .ensuring(_.model == List[A]())\n\n  @ignore\n  def apply[A](as: A*): Vec[A] = Vec(Vector(as*))\n\n  /** What `model` is: the Vector's elements, in order. `model` is ghost, so the compiler erases it from the code\n    * that runs; this is not, so the tests can compute the model the contracts speak of.\n    */\n  @ignore\n  def modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
-        "rooms.SqliteBookings.read": "private def read(query: PreparedStatement): List[Booking] =\n  val rows = query.executeQuery()\n  Iterator.continually(rows).takeWhile(_.next())\n    .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
-        "rooms.BookingTable.add": "@assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n@assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n@extern\nprivate[rooms] def add(booking: Booking): Unit =\n  db.add(booking)\n.ensuring(_ => stored == old(this).stored :+ booking)",
-        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
-        "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
-        "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
-        "rooms.SqliteBookings": "@ignore\nfinal class SqliteBookings private (conn: Connection):\n  conn.createStatement().executeUpdate(\"create table if not exists bookings \" +\n    \"(id integer primary key, room text not null, starts text not null, ends text not null)\")\n\n  def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))\n\n  def add(booking: Booking): Unit = insert(booking)\n\n  /** Runs `body` with no other booking in between: what `oneAtATime` assumes. */\n  def atomically[A](body: => A): A = synchronized(body)\n\n  def held: List[Booking] = synchronized:\n    read(conn.prepareStatement(\"select room, starts, ends from bookings order by id\"))\n\n  private def bookingsIn(room: String): Vector[Booking] = synchronized:\n    val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n    query.setString(1, room)\n    read(query).toVector\n\n  private def insert(b: Booking): Unit = synchronized:\n    val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n    List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n    row.executeUpdate()\n\n  private def read(query: PreparedStatement): List[Booking] =\n    val rows = query.executeQuery()\n    Iterator.continually(rows).takeWhile(_.next())\n      .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
-        "rooms.Vec.model": "@ghost @extern @pure\ndef model: List[A] = Vec.modelOf(this)",
-        "rooms.BookingTable.inRoom": "@assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n@extern @pure\ndef inRoom(room: String): RoomBookings =\n  db.inRoom(room)\n.ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))",
-        "rooms.SqliteBookings.add": "def add(booking: Booking): Unit = insert(booking)",
-        "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
-      },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABARXv0F3f7wOE8eSU3Z7sZYX2DjpZCMVSR8js+OF4Teg4sezB1QQ\nTp2eW2Abc4zRqI5ymco0mmpVesmx0SOZ1ZDw==\n-----END SSH SIGNATURE-----\n"
-    },
-    {
-      "statement": "onlyBookingWrites",
-      "kind": "assumption",
-      "text": "Only booking writes to the table.",
-      "hash": "5b258aceb97d6561b280f3cd8887761876f49240985eeaf335ec36005574c64b",
-      "decision": "accepted",
-      "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
-      "sources": {
-        "rooms.SqliteBookings.inRoom": "def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))",
-        "rooms.SqliteBookings.insert": "private def insert(b: Booking): Unit = synchronized:\n  val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n  List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n  row.executeUpdate()",
-        "rooms.SqliteBookings.bookingsIn": "private def bookingsIn(room: String): Vector[Booking] = synchronized:\n  val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n  query.setString(1, room)\n  read(query).toVector",
-        "rooms.BookingTable": "final class BookingTable private (@extern val db: SqliteBookings, @ghost var stored: List[Booking]):\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @extern @pure\n  def inRoom(room: String): RoomBookings =\n    db.inRoom(room)\n  .ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n  @extern\n  private[rooms] def add(booking: Booking): Unit =\n    db.add(booking)\n  .ensuring(_ => stored == old(this).stored :+ booking)",
-        "rooms.Vec$": "object Vec:\n  @extern @pure\n  def empty[A]: Vec[A] =\n    Vec(Vector.empty[A])\n  .ensuring(_.model == List[A]())\n\n  @ignore\n  def apply[A](as: A*): Vec[A] = Vec(Vector(as*))\n\n  /** What `model` is: the Vector's elements, in order. `model` is ghost, so the compiler erases it from the code\n    * that runs; this is not, so the tests can compute the model the contracts speak of.\n    */\n  @ignore\n  def modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
-        "rooms.SqliteBookings.read": "private def read(query: PreparedStatement): List[Booking] =\n  val rows = query.executeQuery()\n  Iterator.continually(rows).takeWhile(_.next())\n    .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
-        "rooms.Vec.model": "@ghost @extern @pure\ndef model: List[A] = Vec.modelOf(this)",
-        "rooms.BookingTable.add": "@assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n@assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n@extern\nprivate[rooms] def add(booking: Booking): Unit =\n  db.add(booking)\n.ensuring(_ => stored == old(this).stored :+ booking)",
-        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
-        "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
-        "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
-        "rooms.SqliteBookings": "@ignore\nfinal class SqliteBookings private (conn: Connection):\n  conn.createStatement().executeUpdate(\"create table if not exists bookings \" +\n    \"(id integer primary key, room text not null, starts text not null, ends text not null)\")\n\n  def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))\n\n  def add(booking: Booking): Unit = insert(booking)\n\n  /** Runs `body` with no other booking in between: what `oneAtATime` assumes. */\n  def atomically[A](body: => A): A = synchronized(body)\n\n  def held: List[Booking] = synchronized:\n    read(conn.prepareStatement(\"select room, starts, ends from bookings order by id\"))\n\n  private def bookingsIn(room: String): Vector[Booking] = synchronized:\n    val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n    query.setString(1, room)\n    read(query).toVector\n\n  private def insert(b: Booking): Unit = synchronized:\n    val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n    List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n    row.executeUpdate()\n\n  private def read(query: PreparedStatement): List[Booking] =\n    val rows = query.executeQuery()\n    Iterator.continually(rows).takeWhile(_.next())\n      .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
-        "rooms.SqliteBookings.add": "def add(booking: Booking): Unit = insert(booking)",
-        "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
-      },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABA0ynamb/uOYLmyYQV/KJFFZxOIwzj0Xw/d/Le8WJNxVNjnG62Jg\nnApR0hKlATkudZ73XLX8/MmPqFegfkqXyDAg==\n-----END SSH SIGNATURE-----\n"
-    },
-    {
-      "statement": "startsEmpty",
-      "kind": "assumption",
-      "text": "The table starts empty.",
-      "hash": "9149bc7cb30712c39710ea4edee3de4acd0b1739dc2203ff1a9732e33806e3f6",
-      "decision": "accepted",
-      "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
-      "sources": {
-        "rooms.SqliteBookings.inRoom": "def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))",
-        "rooms.SqliteBookings.insert": "private def insert(b: Booking): Unit = synchronized:\n  val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n  List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n  row.executeUpdate()",
-        "rooms.SqliteBookings.bookingsIn": "private def bookingsIn(room: String): Vector[Booking] = synchronized:\n  val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n  query.setString(1, room)\n  read(query).toVector",
-        "rooms.BookingTable": "final class BookingTable private (@extern val db: SqliteBookings, @ghost var stored: List[Booking]):\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @extern @pure\n  def inRoom(room: String): RoomBookings =\n    db.inRoom(room)\n  .ensuring(res => res.room == room && res.bookings.model == stored.filter(b => b.room == room))\n\n  @assumption(\"tableMatchesModel\", \"The table gives a room's bookings in the order they were added, and adds one at the end.\")\n  @assumption(\"onlyBookingWrites\", \"Only booking writes to the table.\")\n  @extern\n  private[rooms] def add(booking: Booking): Unit =\n    db.add(booking)\n  .ensuring(_ => stored == old(this).stored :+ booking)",
-        "rooms.Vec$": "object Vec:\n  @extern @pure\n  def empty[A]: Vec[A] =\n    Vec(Vector.empty[A])\n  .ensuring(_.model == List[A]())\n\n  @ignore\n  def apply[A](as: A*): Vec[A] = Vec(Vector(as*))\n\n  /** What `model` is: the Vector's elements, in order. `model` is ghost, so the compiler erases it from the code\n    * that runs; this is not, so the tests can compute the model the contracts speak of.\n    */\n  @ignore\n  def modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
-        "rooms.SqliteBookings.read": "private def read(query: PreparedStatement): List[Booking] =\n  val rows = query.executeQuery()\n  Iterator.continually(rows).takeWhile(_.next())\n    .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
-        "rooms.Vec.model": "@ghost @extern @pure\ndef model: List[A] = Vec.modelOf(this)",
-        "rooms.BookingTable$.fresh": "@assumption(\"startsEmpty\", \"The table starts empty.\")\n@extern\ndef fresh(db: SqliteBookings): BookingTable =\n  BookingTable(db, Nil())\n.ensuring(_.stored == Nil[Booking]())",
-        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
-        "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
-        "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
-        "rooms.SqliteBookings": "@ignore\nfinal class SqliteBookings private (conn: Connection):\n  conn.createStatement().executeUpdate(\"create table if not exists bookings \" +\n    \"(id integer primary key, room text not null, starts text not null, ends text not null)\")\n\n  def inRoom(room: String): RoomBookings = RoomBookings(room, Vec(bookingsIn(room)))\n\n  def add(booking: Booking): Unit = insert(booking)\n\n  /** Runs `body` with no other booking in between: what `oneAtATime` assumes. */\n  def atomically[A](body: => A): A = synchronized(body)\n\n  def held: List[Booking] = synchronized:\n    read(conn.prepareStatement(\"select room, starts, ends from bookings order by id\"))\n\n  private def bookingsIn(room: String): Vector[Booking] = synchronized:\n    val query = conn.prepareStatement(\"select room, starts, ends from bookings where room = ? order by id\")\n    query.setString(1, room)\n    read(query).toVector\n\n  private def insert(b: Booking): Unit = synchronized:\n    val row = conn.prepareStatement(\"insert into bookings (room, starts, ends) values (?, ?, ?)\")\n    List(b.room, b.start.toString, b.end.toString).zipWithIndex.foreach((v, i) => row.setString(i + 1, v))\n    row.executeUpdate()\n\n  private def read(query: PreparedStatement): List[Booking] =\n    val rows = query.executeQuery()\n    Iterator.continually(rows).takeWhile(_.next())\n      .map(r => Booking(r.getString(1), BigInt(r.getString(2)), BigInt(r.getString(3)))).toList",
-        "rooms.SqliteBookings.add": "def add(booking: Booking): Unit = insert(booking)",
-        "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
-      },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABA60rbIdK/XBzcUKmJfF8DEYcptpkpEvDp1nYBVM6G5phjHZi691\nnArMFQYZcETNumApUP4xCPVudBJqnj5XFmBQ==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABA8QjHhTVi+iEfEIcAAFk+8tQ2wKMSF03Waj04z5jITK/kl6u046\nMYdLDtmxSCMzGMQz9MJgzY+6FGh5z3NpvJAg==\n-----END SSH SIGNATURE-----\n"
     },
     {
       "statement": "calendarChecksNeighbours",
       "kind": "design",
       "text": "The calendar sorts a room's bookings by start and checks a request against its two neighbours only, which is enough because a room's bookings never overlap.",
-      "hash": "342be0673a3573e80bb8429404922912b637cd12e5e30af22b1a91f7a07a816a",
+      "hash": "b940fbeb38e856965bd1258fc46e208233f13201e4cd092a37e5214b2f4a8b74",
       "decision": "accepted",
       "by": "demo-developer",
-      "at": "2026-10-30T01:22:16Z",
+      "at": "2026-10-30T17:49:28Z",
       "sources": {
         "rooms.RoomBookings": "final case class RoomBookings(room: String, bookings: Vec[Booking])",
+        "rooms.Vec (object)": "",
         "rooms.Calendar": "@design(\"calendarChecksNeighbours\", \"The calendar sorts a room's bookings by start and checks a request against its two neighbours only, which is enough because a room's bookings never overlap.\")\n@ignore\nfinal class Calendar(held: RoomBookings):\n  private val startOrder: Ordering[Booking] = Ordering.by(_.start)\n  private val byStart = held.bookings.toVector.sorted(using startOrder)\n\n  def grants(request: Booking): Boolean =\n    val i = byStart.search(request)(using startOrder).insertionPoint\n    val before = byStart.lift(i - 1)\n    val after = byStart.lift(i)\n    val endsInTime = before.forall(_.end <= request.start)\n    val startsAfter = after.forall(_.start >= request.end)\n    request.room != held.room || (endsInTime && startsAfter)",
         "rooms.Vec$": "object Vec:\n  @extern @pure\n  def empty[A]: Vec[A] =\n    Vec(Vector.empty[A])\n  .ensuring(_.model == List[A]())\n\n  @ignore\n  def apply[A](as: A*): Vec[A] = Vec(Vector(as*))\n\n  /** What `model` is: the Vector's elements, in order. `model` is ghost, so the compiler erases it from the code\n    * that runs; this is not, so the tests can compute the model the contracts speak of.\n    */\n  @ignore\n  def modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
         "rooms.Vec.toVector": "@ignore\ndef toVector: Vector[A] = underlying",
         "rooms.Vec.model": "@ghost @extern @pure\ndef model: List[A] = Vec.modelOf(this)",
-        "rooms.Vec": "",
+        "rooms.Vec": "final case class Vec[A](@extern @pure underlying: Vector[A]):\n\n  @ghost @extern @pure\n  def model: List[A] = Vec.modelOf(this)\n\n  @extern @pure\n  def size: BigInt =\n    BigInt(underlying.size)\n  .ensuring(_ == model.size)\n\n  @extern @pure\n  def isEmpty: Boolean =\n    underlying.isEmpty\n  .ensuring(_ == model.isEmpty)\n\n  @extern @pure\n  def :+(a: A): Vec[A] =\n    Vec(underlying :+ a)\n  .ensuring(_.model == model :+ a)\n\n  @extern @pure\n  def filter(p: A => Boolean): Vec[A] =\n    Vec(underlying.filter(p))\n  .ensuring(_.model == model.filter(p))\n\n  @extern @pure\n  def forall(p: A => Boolean): Boolean =\n    underlying.forall(p)\n  .ensuring(_ == model.forall(p))\n\n  /** The Vector itself, for code Stainless does not read (`@extern` and `@ignore` bodies). */\n  @ignore\n  def toVector: Vector[A] = underlying",
         "rooms.Vec$.modelOf": "@ignore\ndef modelOf[A](v: Vec[A]): List[A] = List.fromScala(v.underlying.toList)",
         "rooms.Booking": "@assumption(\"bookingsEndAfterStart\", \"Every booking ends after it starts.\")\nfinal case class Booking(room: String, start: BigInt, end: BigInt):\n  require(start < end)"
       },
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAAj0xZEB72Id9rSQK3VOrV7Kw0wf2pi1iLDNMahiPGpB5fX8CDG\nT/kyvW3HQ71eOkzmXmHqxRa/iEMJuBRiLBDQ==\n-----END SSH SIGNATURE-----\n"
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgn8eXBn4TbYBVVKp8MFBJ5q00n+\nQ7R9kWAmLhYV66YloAAAAOc3RhaW5sZXNzLWZsb3cAAAAAAAAABnNoYTUxMgAAAFMAAAAL\nc3NoLWVkMjU1MTkAAABAzq9NI5C0i0lobEmLK5pkHjSDLdCc6OP+8JYuKxMYQuGx5MQd9W\nx5tMzMPwKP1mw1WmXb52cfRW22rEW3yeRfBg==\n-----END SSH SIGNATURE-----\n"
     }
   ]
 }
